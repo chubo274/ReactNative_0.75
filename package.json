@@ -8,7 +8,7 @@
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx --quiet",
     "lint:fix": "eslint --fix . --quiet",
     "prepare": "husky install",
-    "start": "react-native start",
+    "start": "npx react-native start --experimental-debugger",
     "test": "jest"
   },
   "dependencies": {
