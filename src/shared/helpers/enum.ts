@@ -20,14 +20,14 @@ export enum ModeTheme {
 }
 
 export enum DateTimeFormat {
-  APIFormat = 'YYYY-MM-DD HH:mm:ss',  // defeault api, moment
+  APIFormat = 'yyyy-MM-dd HH:mm:ss',
 
-  FullDateTime = 'DD-MM-YYYY hh:mm:ss',
-  DateTimeAmPm = 'DD-MM-YYYY hh A',
-  DateTime24h = 'DD-MM-YYYY HH:mm',
+  FullDateTime = 'dd-MM-YYYY hh:mm:ss',
+  DateTimeAmPm = 'dd-MM-yyyy hh aaa',
+  DateTime24h = 'dd-MM-yyyy HH:mm',
 
   Time = 'hh:mm:ss',
-  FullDate = 'DD MMM YYYY',
-  TimeHourMinPM = 'HH:mm A',
+  FullDate = 'dd MMM yyyy',
+  TimeHourMinPM = 'HH:mm aaa',
   HourMinutes = 'HH:mm',
 }
