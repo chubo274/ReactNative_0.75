@@ -5,5 +5,7 @@ const ImageSource = {
   img_fallback: require('./source/img_fallback.png'),
   img_bg_bottom_nav: require('./source/img_bg_bottom_nav.png'),
   // image - svg
+  ai_stream_block: require('./source/ai_stream_block.svg'),
+  ai_stream_report: require('./source/ai_stream_report.svg'),
 }
 export default ImageSource
