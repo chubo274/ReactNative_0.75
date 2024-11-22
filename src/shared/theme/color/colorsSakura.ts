@@ -1,12 +1,12 @@
 import { IAppColor } from './IAppColor'
 
-const AppColor: IAppColor = {
+const AppColorSakura: IAppColor = {
   navigation: {
     navigationBackgroundColor: '#FFFFFF',
-    navigationTintColor: '#EE60A3',
+    navigationTintColor: '#0061C1',
 
     tabbarBackgroundColor: '#FFFFFF',
-    tabbarActiveColor: '#EE60A3',
+    tabbarActiveColor: '#1669EF',
     tabbarInactiveColor: '#5D697E',
   },
 
@@ -14,8 +14,10 @@ const AppColor: IAppColor = {
   textColor: {
     primary: '#000000',
     subText: '#575655',
+    white: '#FFFFFF',
   },
   primary: {
+    0: '#00DAB2',
     50: '#e6fbf7',
     100: '#b0f4e7',
     200: '#8aeedc',
@@ -40,6 +42,7 @@ const AppColor: IAppColor = {
     900: '#131212',
   },
   tertiary: {
+    0: '#F2CC3D',
     50: '#fbf7ef',
     100: '#f1e5cd',
     200: '#ead9b5',
@@ -65,4 +68,4 @@ const AppColor: IAppColor = {
   }
 }
 
-export default AppColor
+export default AppColorSakura

@@ -11,8 +11,10 @@ export interface IAppColor {
   textColor: {
     primary: string,
     subText: string,
+    white: string,
   },
   primary: {
+    0: string,
     50: string,
     100: string,
     200: string,
@@ -37,6 +39,7 @@ export interface IAppColor {
     900: string,
   },
   tertiary: {
+    0: string,
     50: string,
     100: string,
     200: string,
