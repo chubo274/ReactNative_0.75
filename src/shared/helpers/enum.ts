@@ -21,11 +21,9 @@ export enum ModeTheme {
 
 export enum DateTimeFormat {
   APIFormat = 'yyyy-MM-dd HH:mm:ss',
-
   FullDateTime = 'dd-MM-YYYY hh:mm:ss',
   DateTimeAmPm = 'dd-MM-yyyy hh aaa',
   DateTime24h = 'dd-MM-yyyy HH:mm',
-
   Time = 'hh:mm:ss',
   FullDate = 'dd MMM yyyy',
   TimeHourMinPM = 'HH:mm aaa',
