@@ -52,7 +52,7 @@ export default HomeScreen
 const useStyles = (theme: ITheme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',
   },

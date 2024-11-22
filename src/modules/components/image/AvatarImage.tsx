@@ -43,7 +43,7 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     borderRadius: 1000,
   },
   viewBgNumber: {
-    backgroundColor: theme.color.bg.white,
+    backgroundColor: theme.color.white,
     position: 'absolute',
     bottom: 0,
     right: 0,
@@ -56,13 +56,13 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
   viewNumber: {
     height: theme.dimensions.makeResponsiveSize(12),
     width: theme.dimensions.makeResponsiveSize(12),
-    backgroundColor: theme.color.bg.white,
+    backgroundColor: theme.color.white,
     borderRadius: theme.dimensions.makeResponsiveSize(14),
     alignItems: 'center',
     justifyContent: 'center'
   },
   textNumber: {
-    color: theme.color.textColor.white,
+    color: theme.color.white,
     fontSize: theme.fontSize.makeResponsiveSize(9),
     fontFamily: theme.font.Medium,
     textAlign: 'center'

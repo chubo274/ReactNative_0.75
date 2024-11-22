@@ -51,6 +51,6 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     height: theme.dimensions.makeResponsiveSize(40),
   },
   textLoading: {
-    color: theme.color.textColor.white,
+    color: theme.color.white,
   }
 })

@@ -2,6 +2,7 @@ import { AppText } from 'components/text/AppText';
 import React, { useState } from 'react'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { ITheme, useAppTheme } from 'shared/theme'
+import { TxtTypo } from 'src/shared/helpers/enum';
 
 interface IProps {
     icon: React.ReactNode;
@@ -32,7 +33,7 @@ export const TabBarIcon = React.memo((props: IProps) => {
 
   return <View style={[styles.container, containerStyle]}>
     {icon}
-    {displayName ? <AppText style={[styles.txtDisplay, { color: isFocused ? theme.color.navigation.tabbarActiveColor : theme.color.navigation.tabbarInactiveColor }]}>{displayName}</AppText> : null}
+    {displayName ? <AppText typo={TxtTypo.Bodysmall_M} style={[styles.txtDisplay, { color: isFocused ? theme.color.navigation.tabbarActiveColor : theme.color.navigation.tabbarInactiveColor }]}>{displayName}</AppText> : null}
     {badge ? <View style={styles.badge} /> : null}
   </View>
 })
@@ -43,14 +44,13 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     alignItems: 'center',
   },
   txtDisplay: {
-    fontSize: theme.fontSize.p11,
     textTransform: 'capitalize'
   },
   badge: {
     position: 'absolute',
     right: -6,
     top: -8,
-    backgroundColor: theme.color.bg.white,
+    backgroundColor: theme.color.white,
     borderRadius: 10,
     width: theme.dimensions.makeResponsiveSize(20),
     height: theme.dimensions.makeResponsiveSize(20),

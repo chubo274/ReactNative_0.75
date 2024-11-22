@@ -1,34 +1,17 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { createStackNavigator } from '@react-navigation/stack'
+import React from 'react'
 import HomeScreen from 'src/modules/screen/home'
 import ProfileScreen from 'src/modules/screen/profile'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { AppTabParamList, HomeStackParamList, ProfileStackParamList } from '../AppParamsList'
-import { CreateHeaderTab } from '../configHeader'
+import CartScreen from 'src/modules/screen/cart'
+import AiStreamScreen from 'src/modules/screen/aiStream'
+import CategoryScreen from 'src/modules/screen/category'
 import { CustomTabBar } from '../components/CustomTabBar'
+import { AppTabParamList } from '../AppParamsList'
+import { TabScreen } from 'src/shared/helpers/enum'
 
 const Tab = createBottomTabNavigator<AppTabParamList>()
-const Home = createStackNavigator<HomeStackParamList>()
-const Profile = createStackNavigator<ProfileStackParamList>()
-
 interface IProps {
 
-}
-
-const HomeStack = (props: IProps) => {
-  return <Home.Navigator screenOptions={{ headerShown: false }} initialRouteName={'HomeScreen'}>
-    <Home.Screen name="HomeScreen" component={HomeScreen} />
-  </Home.Navigator>
-}
-
-const ProfileStack = (props: IProps) => {
-  const { t } = useTranslation();
-  const defaultOptions = CreateHeaderTab('ProfileTab')
-
-  return <Profile.Navigator screenOptions={defaultOptions} initialRouteName={'ProfileScreen'}>
-    <Profile.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerTitle: t('profile') }} />
-  </Profile.Navigator>
 }
 
 const AppTab = (props: IProps) => {
@@ -41,8 +24,11 @@ const AppTab = (props: IProps) => {
     }}
     tabBar={props => <CustomTabBar {...props} />}
   >
-    <Tab.Screen name="HomeTab" component={HomeStack} options={{}} />
-    <Tab.Screen name="ProfileTab" component={ProfileStack} options={{}} />
+    <Tab.Screen name={TabScreen.HomeTab} component={HomeScreen} options={{}} />
+    <Tab.Screen name={TabScreen.CartTab} component={CartScreen} options={{}} />
+    <Tab.Screen name={TabScreen.AiStreamTab} component={AiStreamScreen} options={{}} />
+    <Tab.Screen name={TabScreen.CategoryTab} component={CategoryScreen} options={{}} />
+    <Tab.Screen name={TabScreen.ProfileTab} component={ProfileScreen} options={{}} />
   </Tab.Navigator>
 }
 

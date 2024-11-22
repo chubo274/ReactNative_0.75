@@ -82,7 +82,7 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
 
   toastContainer: {
     // width: '100%',
-    backgroundColor: theme.color.bg.white,
+    backgroundColor: theme.color.white,
     paddingHorizontal: theme.dimensions.p8,
     paddingVertical: theme.dimensions.p12,
     borderRadius: theme.dimensions.p8,

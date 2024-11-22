@@ -73,23 +73,16 @@ const dimensions = {
 
 const fontSize = {
   makeResponsiveSize: responsiveSize,
-  p2: responsiveSize(2),
-  p4: responsiveSize(4),
-  p6: responsiveSize(6),
-  p8: responsiveSize(8),
-  p11: responsiveSize(11),
   p12: responsiveSize(12),
-  p13: responsiveSize(13),
-  p15: responsiveSize(15),
+  p14: responsiveSize(14),
   p16: responsiveSize(16),
-  p18: responsiveSize(18),
   p20: responsiveSize(20),
   p24: responsiveSize(24),
-  p28: responsiveSize(28),
   p32: responsiveSize(32),
-  p36: responsiveSize(36),
-  p40: responsiveSize(40),
-  p48: responsiveSize(48),
+  p42: responsiveSize(42),
+  p52: responsiveSize(52),
+  p72: responsiveSize(72),
+  p120: responsiveSize(120),
 }
 
 export default { dimensions, fontSize }

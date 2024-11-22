@@ -1,11 +1,11 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
-import ImageSource from 'src/assets/images'
 import { RenderImage } from 'components/image/RenderImage'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ITheme, useAppTheme } from 'shared/theme'
 import { TabBarIcon } from './TabBarIcon'
+import { TabScreen } from 'src/shared/helpers/enum'
 
 const sizeIcon = {
   height: 20,
@@ -18,7 +18,7 @@ export const CustomTabBar = (props: BottomTabBarProps) => {
   const { t } = useTranslation();
 
   return (
-    <ImageBackground style={styles.container} source={ImageSource.img_bg_bottom_nav}>
+    <View style={styles.container}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key]
         const { name: routeName } = route
@@ -48,10 +48,19 @@ export const CustomTabBar = (props: BottomTabBarProps) => {
 
         const renderImage = (isFocused: boolean) => {
           switch (routeName) {
-            case 'HomeTab':
+            case TabScreen.HomeTab:
               nameDisplay = t('home');
               return <RenderImage source={undefined} style={sizeIcon} />;
-            case 'ProfileTab':
+            case TabScreen.CartTab:
+              nameDisplay = t('cart');
+              return <RenderImage source={undefined} style={sizeIcon} />;
+            case TabScreen.AiStreamTab:
+              nameDisplay = t('aiStream');
+              return <RenderImage source={undefined} style={sizeIcon} />;
+            case TabScreen.CategoryTab:
+              nameDisplay = t('categories');
+              return <RenderImage source={undefined} style={sizeIcon} />;
+            case TabScreen.ProfileTab:
               nameDisplay = t('profile');
               return <RenderImage source={undefined} style={sizeIcon} />;
             default:
@@ -76,18 +85,21 @@ export const CustomTabBar = (props: BottomTabBarProps) => {
           </TouchableOpacity>
         );
       })}
-    </ImageBackground>
+    </View>
   );
 }
 
 const useStyles = (theme: ITheme) => StyleSheet.create({
   container: {
-    position: 'absolute',
+    height: theme.dimensions.makeResponsiveSize(86),
+    // position: 'absolute',
     bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: theme.dimensions.makeResponsiveSize(18),
-    backgroundColor: 'transparent'
+    paddingVertical: theme.dimensions.makeResponsiveSize(16),
+    paddingHorizontal: theme.dimensions.makeResponsiveSize(16),
   },
   item: {
     flex: 1,
