@@ -147,7 +147,7 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     fontSize: theme.fontSize.p11,
   },
   containerChildrenPopUp: {
-    backgroundColor: theme.color.bg.white,
+    backgroundColor: theme.color.white,
     borderRadius: theme.dimensions.p8,
     maxHeight: theme.dimensions.deviceHeight * 0.75,
     alignItems: 'center'

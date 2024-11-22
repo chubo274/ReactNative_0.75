@@ -15,7 +15,7 @@ export const CreateHeaderDefault = (): StackNavigationOptions => {
 
   const headerOption: StackNavigationOptions = {
     headerTitleStyle: {
-      color: theme.color.textColor.primary,
+      color: theme.color.primary[200],
       fontSize: theme.fontSize.p20,
       fontFamily: theme.font.Medium,
       textTransform: 'capitalize',
@@ -43,7 +43,7 @@ export const CreateHeaderDefault = (): StackNavigationOptions => {
     headerLeftContainerStyle: {
       paddingLeft: theme.dimensions.p16
     },
-    headerTintColor: theme.color.textColor.primary,
+    headerTintColor: theme.color.primary[300],
     headerTitleAllowFontScaling: false,
     headerBackTitleVisible: false,
     headerBackTestID: 'navigation-go-back-button',

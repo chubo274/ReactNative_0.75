@@ -57,7 +57,7 @@ export const NotiHeaderButton = React.memo((props: IProps) => {
 
 const useStyles = (theme: ITheme, imgSize: number, styleCountNoti?: { right: number, width: number }) => StyleSheet.create({
   buttonWrapper: {
-    backgroundColor: theme.color.bg.white,
+    backgroundColor: theme.color.white,
     borderRadius: imgSize,
     padding: theme.dimensions.p8,
     ...globalShadowStyle.shadow,
@@ -73,7 +73,7 @@ const useStyles = (theme: ITheme, imgSize: number, styleCountNoti?: { right: num
     right: styleCountNoti?.right,
   },
   txtCountNoti: {
-    color: theme.color.textColor.white,
+    color: theme.color.white,
     fontFamily: theme.font.Bold,
     fontSize: 12,
     textAlign: 'center',
