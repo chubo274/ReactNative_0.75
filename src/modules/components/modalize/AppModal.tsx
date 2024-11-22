@@ -68,9 +68,6 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
   titleHeader: {
     textTransform: 'uppercase',
     textAlign: 'center',
-    fontFamily: theme.font.Bold,
-    fontSize: theme.fontSize.p11,
-    color: theme.color.textColor.helper,
     marginTop: 10
   }
 });
