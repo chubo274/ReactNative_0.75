@@ -82,6 +82,7 @@ export const CustomTabBar = (props: BottomTabBarProps) => {
 
 const useStyles = (theme: ITheme) => StyleSheet.create({
   container: {
+    // height: theme.dimensions.getTabBottomHeight,
     position: 'absolute',
     bottom: 0,
     flexDirection: 'row',
