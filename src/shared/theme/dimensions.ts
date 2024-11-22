@@ -50,7 +50,7 @@ const dimensions = {
   makeResponsiveSize: responsiveSize,
   getStatusBarHeight: statusBarHeight,
   getBottomSpacing: responsiveSize(40),
-  getTabBarHeight: responsiveSize(90),
+  getTabBottomHeight: responsiveSize(86),
   p2: responsiveSize(2),
   p4: responsiveSize(4),
   p6: responsiveSize(6),
