@@ -14,7 +14,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'ReactNative' do
+target 'swmamobile' do
   config = use_native_modules!
 
   use_react_native!(
@@ -27,7 +27,7 @@ target 'ReactNative' do
   pod 'DVAssetLoaderDelegate', :modular_headers => true
   
 
-  target 'ReactNativeTests' do
+  target 'swmamobileTests' do
     inherit! :complete
     # Pods for testing
   end

@@ -1,5 +1,5 @@
 {
-  "name": "ReactNative",
+  "name": "swmamobile",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -33,6 +33,7 @@
     "react-native-linear-gradient": "^2.8.3",
     "react-native-modalize": "^2.1.1",
     "react-native-portalize": "^1.0.7",
+    "react-native-rename": "^3.2.14",
     "react-native-safe-area-context": "^4.14.0",
     "react-native-screens": "^3.34.0",
     "react-native-svg": "^15.8.0",
