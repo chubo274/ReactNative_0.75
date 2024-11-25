@@ -23,6 +23,10 @@ target 'ReactNative' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'SPTPersistentCache', :modular_headers => true
+  pod 'DVAssetLoaderDelegate', :modular_headers => true
+  
+
   target 'ReactNativeTests' do
     inherit! :complete
     # Pods for testing

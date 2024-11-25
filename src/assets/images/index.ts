@@ -4,6 +4,7 @@ const ImageSource = {
   // image - png
   img_fallback: require('./source/img_fallback.png'),
   img_bg_bottom_nav: require('./source/img_bg_bottom_nav.png'),
+  imageAiStream: require('./source/imageAiStream.svg'),
   // image - svg
   ai_stream_block: require('./source/ai_stream_block.svg'),
   ai_stream_report: require('./source/ai_stream_report.svg'),

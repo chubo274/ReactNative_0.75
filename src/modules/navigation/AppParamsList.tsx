@@ -13,6 +13,7 @@ export type AppStackParamList = {
     AppTab: undefined;
     HomeScreen: undefined;
     ProfileScreen: undefined;
+    AiStreamScreen: undefined;
 } & AppTabParamList;
 
 // all screen no had auth

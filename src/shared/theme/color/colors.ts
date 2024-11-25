@@ -16,6 +16,10 @@ const AppColor: IAppColor = {
     subText: '#575655',
     white: '#FFFFFF',
   },
+  blackBlurColor04: 'rgba(0, 0, 0, 0.4)',
+  blackBlurColor02: 'rgba(0, 0, 0, 0.2)',
+  blackBlurColor: 'background: rgba(12, 32, 54, 0.6)',
+  darkMprimary: '#30B4C1',
   primary: {
     0: '#00DAB2',
     50: '#e6fbf7',

@@ -8,6 +8,9 @@ import { StyleSheet, View } from 'react-native';
 import { ITheme, useAppTheme } from 'shared/theme';
 import { useGetSession, useSaveSession } from 'src/zustand/session';
 import { useGetPersist, useSavePersist } from 'src/zustand/persist';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AppStackParamList } from 'src/modules/navigation/AppParamsList';
 
 const HomeScreen = () => {
   const theme = useAppTheme();
@@ -21,6 +24,7 @@ const HomeScreen = () => {
   console.info('data', data)
   console.info('token', token)
   console.info('pokemon', pokemon)
+  const navigation = useNavigation<StackNavigationProp<AppStackParamList, 'AiStreamScreen'>>()
 
   const onLogout = useCallback(() => {
     backToTopAuthStack()
@@ -30,6 +34,10 @@ const HomeScreen = () => {
     fetchPokemon()
     _useSaveSession('pokemon', '123')
     _useSavePersist('Token', { token: 'token' })
+  }, [fetchPokemon, _useSaveSession, _useSavePersist])
+
+  const navigateToAiStream = useCallback(() => {
+    navigation.navigate('AiStreamScreen')
   }, [fetchPokemon, _useSaveSession, _useSavePersist])
 
   return <View style={styles.container}>
@@ -42,6 +50,11 @@ const HomeScreen = () => {
     <AppButton
       title={'change url login in repositories to test'}
       onPress={callApi}
+      style={styles.btn}
+    />
+    <AppButton
+      title={'navigate to ai stream '}
+      onPress={navigateToAiStream}
       style={styles.btn}
     />
   </View>
