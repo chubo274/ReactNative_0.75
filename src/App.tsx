@@ -22,6 +22,7 @@ import ThemeProvider from 'shared/theme';
 import RootStack from './modules/navigation';
 import { LANGUAGES } from './shared/helpers/enum';
 import { configureLocalization } from './shared/localization';
+import { PortalProvider } from '@gorhom/portal';
 
 export const appState = {
   initializeReady: false,
@@ -56,12 +57,14 @@ const App = () => {
 
         }}
       >
-        <Host>
-          <StatusBar barStyle={Platform.select({ android: 'light-content', ios: 'dark-content', })} />
-          <AppToast />
-          <RootStack />
-          <ImageLoading />
-        </Host>
+        <PortalProvider>
+          <Host>
+            <StatusBar barStyle={Platform.select({ android: 'light-content', ios: 'dark-content', })} />
+            <AppToast />
+            <RootStack />
+            <ImageLoading />
+          </Host>
+        </PortalProvider>
       </NavigationContainer>
     </GestureHandlerRootView>
   </ThemeProvider>

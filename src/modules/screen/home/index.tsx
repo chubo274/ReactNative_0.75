@@ -1,13 +1,14 @@
-import { useGetPokemon } from 'src/data/hooks/user/useGetPokemon';
-import { backToTopAuthStack } from 'src/modules/navigation';
+import BottomSheet from '@gorhom/bottom-sheet';
 import { AppButton } from 'components/button/AppButton';
 import { AppText } from 'components/text/AppText';
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { ITheme, useAppTheme } from 'shared/theme';
-import { useGetSession, useSaveSession } from 'src/zustand/session';
+import { useGetPokemon } from 'src/data/hooks/user/useGetPokemon';
 import { useGetPersist, useSavePersist } from 'src/zustand/persist';
+import { useGetSession, useSaveSession } from 'src/zustand/session';
+import { ModalUserWatching } from '../aiStream/component/ModalUserWatching';
 
 const HomeScreen = () => {
   const theme = useAppTheme();
@@ -17,13 +18,14 @@ const HomeScreen = () => {
   const _useSavePersist = useSavePersist()
   const token = useGetPersist('Token')
   const pokemon = useGetSession('pokemon')
+  const bottomSheetModalRef = useRef<BottomSheet>(null)
   const { fetch: fetchPokemon, data } = useGetPokemon()
   console.info('data', data)
   console.info('token', token)
   console.info('pokemon', pokemon)
 
   const onLogout = useCallback(() => {
-    backToTopAuthStack()
+    bottomSheetModalRef.current?.snapToIndex(0)
   }, [])
 
   const callApi = useCallback(() => {
@@ -44,6 +46,7 @@ const HomeScreen = () => {
       onPress={callApi}
       style={styles.btn}
     />
+    <ModalUserWatching data={[1, 2, 3]} ref={bottomSheetModalRef} />
   </View>
 }
 
