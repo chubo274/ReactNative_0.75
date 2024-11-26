@@ -5,7 +5,7 @@ const height = Dimensions.get('window').height
 const screenHeight = Dimensions.get('screen').height
 const navbarHeight = screenHeight - height + (StatusBar.currentHeight ?? 0)
 
-const scale = width / 375
+const scale = width / 430
 
 const responsiveSize = (size: number) => {
   const newSize = size * scale

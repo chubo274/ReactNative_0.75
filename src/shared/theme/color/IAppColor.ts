@@ -13,6 +13,10 @@ export interface IAppColor {
     subText: string,
     white: string,
   },
+  blackBlurColor04: string
+  blackBlurColor02: string,
+  blackBlurColor: string,
+  darkMprimary: string,
   primary: {
     0: string,
     50: string,

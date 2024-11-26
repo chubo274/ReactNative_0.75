@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { AppBottomSheet } from 'src/modules/components/modalize/AppBottomSheet';
 import { ITheme, useAppTheme } from 'src/shared/theme';
+import { ItemUserFollow } from './ItemUserFollow';
 
 interface IProps {
   data?: any[]
@@ -15,6 +16,13 @@ export const ModalUserWatching = React.memo(React.forwardRef((props: IProps, ref
   const theme = useAppTheme();
   const styles = useStyles(theme);
 
+  const dataAbc = [
+    { uri: 'https://picsum.photos/200', name: 'ThanhNGuye', numberFollow: '2,2k' },
+    { uri: 'https://picsum.photos/200', name: 'ThanhNGuye', numberFollow: '2,2k' },
+    { uri: 'https://picsum.photos/200', name: 'ThanhNGuye', numberFollow: '2,2k' },
+    { uri: 'https://picsum.photos/200', name: 'ThanhNGuye', numberFollow: '2,2k' },
+    { uri: 'https://picsum.photos/200', name: 'ThanhNGuye', numberFollow: '2,2k' },
+  ]
   const handleComponent = useCallback(() => {
     return <View style={[{
       alignItems: 'center',
@@ -43,14 +51,11 @@ export const ModalUserWatching = React.memo(React.forwardRef((props: IProps, ref
     </View>
   }, [styles])
 
-  const renderItem = useCallback(({ item, index }: { item: any, index: number }) => {
-    return <TouchableOpacity
-      activeOpacity={0.8}
-      style={{ backgroundColor: 'blue', marginVertical: 16, width: '100%', height: 50 }}
-      onPress={() => { console.info(index) }}
-    />
-  }, [])
-
+  const renderItem = ({ item, index }: { item: any, index: number }) => {
+       return <View style={{ paddingHorizontal: theme.dimensions.p24 }}>
+      <ItemUserFollow name={item?.name} numberOfFollow={item?.numberFollow} uri={item?.uri} />
+    </View>
+  }
   return <AppBottomSheet
     ref={ref}
     snapPoints={['60%']}
@@ -71,8 +76,8 @@ export const ModalUserWatching = React.memo(React.forwardRef((props: IProps, ref
     />
     <View style={{ zIndex: 2 }}>
       <BottomSheetFlatList
-        data={data}
-        keyExtractor={(i) => i}
+        data={dataAbc}
+        // keyExtractor={(item, index) => index}
         renderItem={renderItem}
       />
     </View>
