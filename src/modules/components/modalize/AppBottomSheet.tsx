@@ -38,12 +38,6 @@ export const AppBottomSheet = React.memo(React.forwardRef((props: IProps, ref: R
       enablePanDownToClose={true}
       backdropComponent={renderBackdrop}
       {...rest}
-      // backdropComponent={(props) => <BottomSheetBackdrop
-      //   {...props}
-      //   appearsOnIndex={0}
-      //   disappearsOnIndex={-1}
-      //   opacity={0.5}
-      // />}
     >
     </BottomSheet>
   </Portal>

@@ -39,7 +39,7 @@ export const InfoFooter = () => {
           <AppText style={styles.txtTitleStream}>Tere mere sath</AppText>
           <RenderImage
             source={ImageSource.imageAiStream}
-            style={{ width: 14, height: 14, borderRadius: 14, marginLeft: theme.dimensions.p4 }}
+            style={{ width: 14, height: 14, marginLeft: theme.dimensions.p4 }}
             resizeMode={'cover'}
             fallBackSource={ImageSource.img_fallback}
           />
