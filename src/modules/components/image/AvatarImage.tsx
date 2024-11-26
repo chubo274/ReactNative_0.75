@@ -12,7 +12,6 @@ interface IAvatarImage {
   source?: ImageSourcePropType | string,
   number?: number
   resizeMode?: ResizeMode
-  haveBorderAva?: boolean
   containerStyle?: StyleProp<ViewStyle>
 }
 
