@@ -4,6 +4,7 @@ import React from 'react'
 import NavigationService from 'shared/helpers/NavigationService'
 import AppStack from './appStack'
 import AuthStack from './authStack'
+import SplashScreen from '../screen/splashScreen/splashScreen'
 
 const Stack = createStackNavigator()
 
@@ -32,9 +33,9 @@ const RootStack = (props: IProps) => {
       animationTypeForReplace: 'push',
     }}
   >
-    {/* <Stack.Screen name={'AppSplash'} component={AppSplashScreen} /> */}
-    <Stack.Screen name={'App'} component={AppStack} options={{ headerShown: false }} />
-    <Stack.Screen name={'Auth'} component={AuthStack} options={{ headerShown: false }} />
+    <Stack.Screen name={'AppSplash'} component={SplashScreen} />
+    <Stack.Screen name={'App'} component={AppStack} />
+    <Stack.Screen name={'Auth'} component={AuthStack} />
   </Stack.Navigator>
 }
 

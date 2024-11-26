@@ -1,7 +1,7 @@
 import BottomSheet, { BottomSheetFlatList } from '@gorhom/bottom-sheet';
 import { BlurView as BlurViewComm } from '@react-native-community/blur';
 import React, { useCallback } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { AppBottomSheet } from 'src/modules/components/modalize/AppBottomSheet';
 import { ITheme, useAppTheme } from 'src/shared/theme';
 
@@ -44,8 +44,10 @@ export const ModalUserWatching = React.memo(React.forwardRef((props: IProps, ref
   }, [styles])
 
   const renderItem = useCallback(({ item, index }: { item: any, index: number }) => {
-    return <View
+    return <TouchableOpacity
+      activeOpacity={0.8}
       style={{ backgroundColor: 'blue', marginVertical: 16, width: '100%', height: 50 }}
+      onPress={() => { console.info(index) }}
     />
   }, [])
 
@@ -53,9 +55,7 @@ export const ModalUserWatching = React.memo(React.forwardRef((props: IProps, ref
     ref={ref}
     snapPoints={['60%']}
     backgroundStyle={{ backgroundColor: 'transparent' }}
-    handleComponent={handleComponent}
-    // handleStyle={styles.handleStyle}
-  >
+    handleComponent={handleComponent}>
     <BlurViewComm
       style={{
         zIndex: 1,
