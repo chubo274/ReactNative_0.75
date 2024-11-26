@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { AvatarAiStream } from './AvatarAiStream';
+import { AvatarImage } from 'src/modules/components/image/AvatarImage';
 import { AppText } from 'src/modules/components/text/AppText';
-import { ITheme, useAppTheme } from 'src/shared/theme';
 import { TxtTypo } from 'src/shared/helpers/enum';
+import { ITheme, useAppTheme } from 'src/shared/theme';
 
 export const InfoUserMainStream = () => {
   const theme = useAppTheme();
@@ -12,7 +12,7 @@ export const InfoUserMainStream = () => {
   return (
     <View style={styles.containerWrapper}>
       <View style={styles.imgWrapper}>
-        <AvatarAiStream size={42} source={{ uri: 'https://picsum.photos/200' }} />
+        <AvatarImage size={42} source={{ uri: 'https://picsum.photos/200' }} containerStyle={styles.borderAvt} />
         <AppText typo={TxtTypo.Smallest_M} style={{ paddingLeft: theme.dimensions.p6, color: theme.color.white }}>Ramic Mature</AppText>
       </View>
       <TouchableOpacity style={styles.btnFollow} activeOpacity={0.8}  >
@@ -52,5 +52,10 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     fontWeight: '500',
     fontSize: theme.fontSize.p12,
     lineHeight: 14
+  },
+  borderAvt: {
+    borderWidth: 2,
+    borderRadius: 1000,
+    borderColor: theme.color.white
   }
 })

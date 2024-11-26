@@ -46,7 +46,7 @@ export const InfoFooter = () => {
         </View>
         <View style={styles.subTitleWrapper}>
           <AppText style={styles.txtSubTitle} onTextLayout={handleTextLayout} numberOfLines={showMore ? undefined : 1}>Buy our new  Buy our new Buy our new Buy our new Buy our new  Buy our new Buy our new  Buy our new</AppText>
-          {widthText > 235
+          {widthText > 220
             ?
             <TouchableOpacity activeOpacity={0.8} onPress={() => setShowMore((prev) => !prev)} style={{ justifyContent: "flex-end" }}>
               <AppText style={styles.txtMore}>{showMore ? `${`Hide`}` : `${`More`}`}</AppText>
@@ -60,7 +60,7 @@ export const InfoFooter = () => {
 
 const useStyles = (theme: ITheme, showMore: boolean, numberLengthOfText: number) => StyleSheet.create({
   containerWrapper: {
-    top: showMore ? -10 * numberLengthOfText : 0
+    top: !showMore ? 100 : 100 - numberLengthOfText * 10
   },
   viewProduct: {
     backgroundColor: 'background: rgba(12, 32, 54, 0.6)',

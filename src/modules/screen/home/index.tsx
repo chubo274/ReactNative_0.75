@@ -12,6 +12,7 @@ import { AppStackParamList } from 'src/modules/navigation/AppParamsList';
 import { useGetPersist, useSavePersist } from 'src/zustand/persist';
 import { useGetSession, useSaveSession } from 'src/zustand/session';
 import { ModalUserWatching } from '../aiStream/component/ModalUserWatching';
+import { ItemUserFollow } from '../aiStream/component/ItemUserFollow';
 
 const HomeScreen = () => {
   const theme = useAppTheme();
@@ -27,7 +28,10 @@ const HomeScreen = () => {
   console.info('token', token)
   console.info('pokemon', pokemon)
   const navigation = useNavigation<StackNavigationProp<AppStackParamList, 'AiStreamScreen'>>()
-
+  const dataAbc = [
+    { uri: 'https://picsum.photos/200', name: 'ThanhNGuye', numberFollow: '2,2k' },
+    { uri: 'https://picsum.photos/200', name: 'ThanhNGuye', numberFollow: '2,2k' },
+  ]
   const onLogout = useCallback(() => {
     bottomSheetModalRef.current?.snapToIndex(0)
   }, [])
@@ -60,6 +64,11 @@ const HomeScreen = () => {
       style={styles.btn}
     />
     <ModalUserWatching data={[1, 2, 3]} ref={bottomSheetModalRef} />
+    {dataAbc?.map((el) => {
+      return (
+        <ItemUserFollow name={el?.name} numberOfFollow={el?.numberFollow} uri={el?.uri} />
+      )
+    })}
   </View>
 }
 
@@ -69,8 +78,6 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   btn: {
     backgroundColor: 'transparent',

@@ -1,13 +1,11 @@
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { AvatarAiStream } from './AvatarAiStream';
-import { AppText } from 'src/modules/components/text/AppText';
-import { ITheme, useAppTheme } from 'src/shared/theme';
-import { InfoUserMainStream } from './InfoUserMainStream';
-import { CreateStreamButton } from './CreateStreamButton';
-import { ListActionButton } from './ListActionButton';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ITheme, useAppTheme } from 'src/shared/theme';
+import { CreateStreamButton } from './CreateStreamButton';
 import { InfoFooter } from './InfoFooter';
+import { InfoUserMainStream } from './InfoUserMainStream';
+import { ListActionButton } from './ListActionButton';
 
 
 export const ItemVideo = () => {
@@ -18,9 +16,9 @@ export const ItemVideo = () => {
   return (
     <View style={styles.containerWrapper}>
       <InfoUserMainStream />
-      <CreateStreamButton/>
-      <ListActionButton/>
-      <InfoFooter/>
+      <CreateStreamButton />
+      <ListActionButton />
+      <InfoFooter />
     </View>
   )
 }

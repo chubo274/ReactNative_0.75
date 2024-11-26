@@ -1,15 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { Dimensions, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
 import Video from 'react-native-video';
-import { AppText } from 'src/modules/components/text/AppText';
-import { ITheme, useAppTheme } from 'src/shared/theme';
 import convertToProxyURL from 'react-native-video-cache';
-import dimensions from 'src/shared/theme/dimensions';
-import { RenderImage } from 'src/modules/components/image/RenderImage';
-import { AvatarImage } from 'src/modules/components/image/AvatarImage';
-import { AvatarAiStream } from './component/AvatarAiStream';
-import { InfoUserMainStream } from './component/InfoUserMainStream';
-import ImageSource from 'src/assets/images';
+import { ITheme, useAppTheme } from 'src/shared/theme';
 import { ItemVideo } from './component/ItemVideo';
 
 const data = [
