@@ -5,16 +5,17 @@ import AuthenticationInterceptor from './interceptor/AuthenticationInterceptor'
 import DefaultInterceptor from './interceptor/DefaultAppInterceptor'
 import { RetryInterceptor } from './interceptor/RetryInterceptor'
 import { baseUrl } from './resource'
+import ZustandPersist from 'src/zustand/persist'
 
 export type HTTPMethod = 'POST' | 'GET' | 'PUT' | 'PATCH' | 'DELETE' | 'POSTFORM'
 
 interface IConfigRequest {
-    method: HTTPMethod
-    resource: string
-    isFormDataType?: boolean
-    body?: any
-    params?: any
-    queryParams?: any
+  method: HTTPMethod
+  resource: string
+  isFormDataType?: boolean
+  body?: any
+  params?: any
+  queryParams?: any
 }
 class ApiGateway {
   _instanceAxios = axios.create()
@@ -53,14 +54,18 @@ class ApiGateway {
 
   execute = (config: IConfigRequest) => {
     const { method, resource, body, isFormDataType, params, queryParams } = config
+    // const { token } = ZustandPersist.getState().get('Token') ?? {}
     const headers = {
       'Accept': 'application/json',
       'Content-Type': isFormDataType ? 'multipart/form-data' : 'application/json', // Content-Type = 'application/json' == null
+      'sw-access-key': 'SWSCRUDICUUXCTDTDHHKRWW1NA',
+      'Authorization':  '',
     }
+    // headers['Authorization'] = token || ''
     const url = queryParams ? resource + queryParams : resource
     let data = body
-    if (isFormDataType) {data = parseFormData(body)}
-    if (method == 'GET') {data = undefined}
+    if (isFormDataType) { data = parseFormData(body) }
+    if (method == 'GET') { data = undefined }
 
     const configRequest: AxiosRequestConfig<any> = {
       baseURL: baseUrl.value,
@@ -84,13 +89,13 @@ class ApiGateway {
       case 'GET':
         return this._instanceAxios.get(resource, configRequest)
       case 'PATCH':
-        return this._instanceAxios.patch(resource, configRequest)
+        return this._instanceAxios.patch(resource, data, configRequest)
       case 'POST':
-        return this._instanceAxios.post(resource, configRequest)
+        return this._instanceAxios.post(resource, data, configRequest)
       case 'PUT':
-        return this._instanceAxios.put(resource, configRequest)
+        return this._instanceAxios.put(resource, data, configRequest)
       case 'POSTFORM':
-        return this._instanceAxios.postForm(resource, configRequest)
+        return this._instanceAxios.postForm(resource, data, configRequest)
 
       default:
         // @ts-ignore
