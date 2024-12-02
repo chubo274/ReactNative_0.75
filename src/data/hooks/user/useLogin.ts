@@ -30,7 +30,7 @@ export const useLogin = () => {
     } catch (error: any) {
       if (!error?.canceled) {
         setError(error?.message)
-        options?.onFailed?.()
+        options?.onFailed?.(error)
       }
     } finally {
       !options?.withoutLoading && setIsLoading(false)
