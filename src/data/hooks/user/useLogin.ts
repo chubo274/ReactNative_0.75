@@ -2,16 +2,15 @@ import { UserRepository } from 'src/data/repositories/user';
 import { ResponseModel } from 'src/models/common';
 import { UserModel } from 'src/models/user/UserModel';
 import { useCallback, useState } from 'react';
-interface IParams {
-    params: IParamLogin,
-    withoutLoading?: boolean,
-    onSuccess?: (data?: any) => void,
-    onFailed?: (error?: any) => void,
+interface IOptions {
+  withoutLoading?: boolean,
+  onSuccess?: (data?: any) => void,
+  onFailed?: (error?: any) => void,
 }
 
-export interface IParamLogin {
-    email: string,
-    password: string
+interface IParamApi {
+  email: string,
+  password: string
 }
 
 // =====
@@ -21,20 +20,20 @@ export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetch = useCallback(async (currentParams?: IParams) => {
-    !currentParams?.withoutLoading && setIsLoading(true)
+  const fetch = useCallback(async (params: IParamApi, options?: IOptions) => {
+    !options?.withoutLoading && setIsLoading(true)
     try {
-      const response = await handlerFrist.takeLatest(UserRepository.loginRepo(currentParams?.params!))
+      const response = await handlerFrist.takeLatest(UserRepository.loginRepo(params))
       setData(response?.data)
       // save('',response?.data)
-      currentParams?.onSuccess?.()
+      options?.onSuccess?.()
     } catch (error: any) {
       if (!error?.canceled) {
         setError(error?.message)
-        currentParams?.onFailed?.()
+        options?.onFailed?.(error)
       }
     } finally {
-      !currentParams?.withoutLoading && setIsLoading(false)
+      !options?.withoutLoading && setIsLoading(false)
     }
   }, [])
 
@@ -47,8 +46,8 @@ export const useLogin = () => {
 }
 
 interface IPromiseCancel<T> {
-    promise: Promise<T>;
-    canceled: (reason?: any) => void;
+  promise: Promise<T>;
+  canceled: (reason?: any) => void;
 }
 
 const promiseCancelable = <T,>(promise: Promise<T>) => {
