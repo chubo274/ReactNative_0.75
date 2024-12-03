@@ -69,7 +69,7 @@ export const AppInput = React.memo((props: IAppInput) => {
   }, [iconLeft])
 
   const renderIconClear = useCallback(() => {
-    if (!value) return null
+    if (!value || !onClear) return null
     return <TouchableOpacity activeOpacity={0.8} style={{ marginHorizontal: 4 }} onPress={onClear} hitSlop={{ top: 10, bottom: 10, left: 4, right: 4 }}>
       <RenderImage source={ImageSource.ic_apple} style={{ width: 16, aspectRatio: 1 }} />
     </TouchableOpacity>
