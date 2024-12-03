@@ -52,10 +52,10 @@ export const AppInput = React.memo((props: IAppInput) => {
   }, [disabled, theme.color])
 
   // animated
-  const transY = useSharedValue<number>(value ? dimensionTransY : 0);
-  const stylezLabel = useAnimatedStyle((): ViewStyle => ({ transform: [{ translateY: transY.value }] }))
+  const transY = useSharedValue<number>(0);
+  const stylezLabel = useAnimatedStyle((): ViewStyle => ({ transform: [{ translateY: (value || placeholder) ? dimensionTransY : transY.value }] }))
   const stylezTxtLabel = useAnimatedStyle((): TextStyle => ({
-    color: interpolateColor(transY.value, [0, dimensionTransY], [theme.color.textColor.primary, theme.color.textColor.subText])
+    color: interpolateColor((value || placeholder) ? dimensionTransY : transY.value, [0, dimensionTransY], [theme.color.textColor.primary, theme.color.textColor.subText])
   }))
   const pressFocus = useCallback(() => {
     ref.current?.focus()
