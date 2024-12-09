@@ -1,5 +1,5 @@
 import { IAppToast } from 'components/toast/AppToast'
-import { DeviceEventEmitter } from 'react-native'
+import { DeviceEventEmitter, Share, ShareAction } from 'react-native'
 import ZustandPersist, { ISessionStorage } from 'src/zustand/persist'
 import { EmitType } from './constant'
 
@@ -36,4 +36,38 @@ export const emitShowToast = (params: IAppToast) => {
 
 export const emitShowAppLoading = (isShow: boolean) => {
   DeviceEventEmitter.emit(EmitType.AppLoading, isShow)
+}
+
+// Share function
+interface IShareParams {
+  title?: string,
+  message: string,
+  url: string,
+}
+export const shareByDevice = (params: IShareParams, onSuccess?: (e?: any) => void, onFail?: (e?: any) => void) => {
+  Share.share(params).then((result: ShareAction) => {
+    if (result.action === Share.sharedAction) {
+      switch (result.activityType) {
+        case 'com.apple.UIKit.activity.CopyToPasteboard':
+          emitShowToast({ type: 'Success', toastMessage: getString('copySuccess') })
+          break;
+        default:
+          onSuccess?.(result)
+          break;
+      }
+    } else if (result.action === Share.dismissedAction) {
+      // dismissed
+      onFail?.(result)
+    }
+  }).catch((error: any) => {
+    console.info(error.message);
+  })
+};
+
+// Formik
+export const parseStatusFormik = (values: any, errors: FormikErrors<any>, touched: any, key: string) => {
+  if (errors[key] && touched[key]) return 'error'
+  if (typeof values[key] === 'number' && values[key] !== null) return 'success'
+  if (values[key] && !errors[key]) return 'success'
+  return undefined
 }
