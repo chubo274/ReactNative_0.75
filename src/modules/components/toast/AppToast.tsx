@@ -2,13 +2,13 @@ import { AppText } from 'components/text/AppText';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeviceEventEmitter, StyleSheet, TouchableOpacity, View } from 'react-native';
-import Animated, { AnimatableValue, runOnJS, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { EmitType } from 'shared/helpers/constant';
 import { ITheme, useAppTheme } from 'shared/theme';
 import ImageSource from 'src/assets/images';
 import { TxtTypo } from 'src/shared/helpers/enum';
 import { RenderImage } from '../image/RenderImage';
 import { X } from './Icons/X';
+import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export interface IAppToast {
   type?: 'Error' | 'Warning' | 'Success' | 'Saved'
@@ -20,39 +20,24 @@ export interface IAppToast {
 export const AppToast = React.memo((props: IAppToast) => {
   const { t } = useTranslation()
   const theme = useAppTheme();
-  const styles = useStyles(theme);
-  const [showToast, setShowToast] = useState(true)
+  const inset = useSafeAreaInsets()
+  const styles = useStyles(theme, inset);
+  const [showToast, setShowToast] = useState(false)
   const [toastConfig, setToastConfig] = useState<IAppToast>({})
   const { type = 'Success', toastMessage = '', numberOfLines = 1, onPress } = useMemo(() => toastConfig, [toastConfig])
-  const toastTimer = useRef<NodeJS.Timeout>()
-  const transY = useSharedValue(0);
-
-  const _toastOut = useCallback(() => {
-    const changeJs = () => {
-      setShowToast(false)
-      clearTimeout(toastTimer.current)
-      toastTimer.current = undefined
-    }
-    transY.value = withSequence(
-      withTiming(90, { duration: 300 }),
-      withTiming(-90, { duration: 700 }, (finished?: boolean, current?: AnimatableValue) => {
-        if (finished) {
-          runOnJS(changeJs)()
-        }
-      }),
-    )
-  }, [transY])
+  const isToast = useRef(false)
 
   const _emitShowToast = useCallback((params: IAppToast) => {
-    if (!toastTimer.current) {
+    if (!isToast.current) {
+      isToast.current = true
       setToastConfig(params)
       setShowToast(true)
-      transY.value = withTiming(74, { duration: 700 });
-      toastTimer.current = setTimeout(() => {
-        _toastOut()
-      }, 2000);
+      setTimeout(() => {
+        setShowToast(false)
+        isToast.current = false
+      }, 2000)
     }
-  }, [_toastOut, transY])
+  }, [])
 
   const _color = useMemo(() => {
     switch (type) {
@@ -69,17 +54,9 @@ export const AppToast = React.memo((props: IAppToast) => {
   }, [type, theme])
 
   const pressInToast = useCallback(() => {
-    clearTimeout(toastTimer.current)
-    _toastOut()
+    setShowToast(false)
     onPress?.()
-  }, [onPress, _toastOut])
-
-  // animation
-  const stylezContainer = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: transY.value }],
-    }
-  }, [transY]);
+  }, [onPress])
 
   // render
   const renderIconLeft = useCallback(() => {
@@ -126,7 +103,7 @@ export const AppToast = React.memo((props: IAppToast) => {
 
   return <>
     {showToast &&
-      <Animated.View style={[styles.container, stylezContainer]}>
+      <View style={styles.container}>
         <TouchableOpacity activeOpacity={0.9} style={styles.toastContainer} onPress={pressInToast}>
           {renderIconLeft()}
           <View style={{ flexShrink: 1, marginRight: 8 }}>
@@ -134,16 +111,16 @@ export const AppToast = React.memo((props: IAppToast) => {
           </View>
           {renderIconRight()}
         </TouchableOpacity>
-      </Animated.View>
+      </View>
     }
   </>
 
 })
 
-const useStyles = (theme: ITheme) => StyleSheet.create({
+const useStyles = (theme: ITheme, inset: EdgeInsets) => StyleSheet.create({
   container: {
     position: 'absolute',
-    top: -30,
+    top: inset.top + 16,
     zIndex: 999,
     alignSelf: 'center',
   },
