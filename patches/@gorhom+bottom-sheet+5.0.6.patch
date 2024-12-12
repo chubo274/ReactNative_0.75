@@ -1,0 +1,14 @@
+diff --git a/node_modules/@gorhom/bottom-sheet/src/components/bottomSheet/BottomSheet.tsx b/node_modules/@gorhom/bottom-sheet/src/components/bottomSheet/BottomSheet.tsx
+index c79181a..1b25d97 100644
+--- a/node_modules/@gorhom/bottom-sheet/src/components/bottomSheet/BottomSheet.tsx
++++ b/node_modules/@gorhom/bottom-sheet/src/components/bottomSheet/BottomSheet.tsx
+@@ -789,6 +789,9 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
+       function getEvaluatedPosition(source: ANIMATION_SOURCE) {
+         'worklet';
+         const currentIndex = animatedCurrentIndex.value;
++        if (source !== ANIMATION_SOURCE.MOUNT && currentIndex >= 0) {
++          return animatedSnapPoints.value[currentIndex];
++        }
+         const snapPoints = animatedSnapPoints.value;
+         const keyboardState = animatedKeyboardState.value;
+         const highestSnapPoint = animatedHighestSnapPoint.value;
