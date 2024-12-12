@@ -1,28 +1,27 @@
+export type AllRouteParamList = AppTabParamList & AppStackParamList & AuthStackParamList;
 
 // stack in tab bar
 export type AppTabParamList = {
-    HomeTab: undefined;
-    ProfileTab: undefined;
-};
-
-export type HomeStackParamList = {
     HomeScreen: undefined;
-} & AppStackParamList & AppTabParamList;
-
-export type ProfileStackParamList = {
     ProfileScreen: undefined;
-} & AppStackParamList & AppTabParamList;
+};
 
 // all screen had auth
 export type AppStackParamList = {
-    AppTab: undefined;
-    HomeScreen: undefined;
-    ProfileScreen: undefined;
-} & AppTabParamList;
+    AppTab: any;
+
+    NotificationScreen?: { seen?: boolean };
+};
 
 // all screen no had auth
 export type AuthStackParamList = {
     LoginScreen: undefined;
 };
 
-export type AllRouteParamList = AppStackParamList & AuthStackParamList;
+// navigate screen in stack example
+// navigation.navigate('AppStackParamList', {
+//   screen: 'NotificationScreen',
+//   params: { 
+//     seen: true
+//   },
+// });
