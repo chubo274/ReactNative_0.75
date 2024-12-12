@@ -1,7 +1,7 @@
 import { CommonActions, NavigationContainerRef, NavigationState, PartialState, Route, StackActions } from '@react-navigation/native'
-import { AppStackParamList, AuthStackParamList } from 'src/modules/navigation/AppParamsList'
+import { AllRouteParamList } from 'src/modules/navigation/AppParamsList'
 
-type AllRoutes = keyof AppStackParamList | keyof AuthStackParamList
+type AllRoutes = keyof AllRouteParamList
 
 declare type ResetState = PartialState<NavigationState> | NavigationState | (Omit<NavigationState, 'routes'> & {
     routes: Array<Omit<Route<string>, 'key'>>
