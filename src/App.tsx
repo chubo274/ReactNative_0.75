@@ -16,7 +16,7 @@ import { AppToast } from 'components/toast/AppToast';
 import React, { useRef } from 'react';
 import { Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Host } from 'react-native-portalize';
+import { PortalProvider } from '@gorhom/portal';
 import NavigationService from 'shared/helpers/NavigationService';
 import ThemeProvider from 'shared/theme';
 import RootStack from './modules/navigation';
@@ -56,12 +56,12 @@ const App = () => {
 
         }}
       >
-        <Host>
+        <PortalProvider>
           <StatusBar barStyle={Platform.select({ android: 'light-content', ios: 'dark-content', })} />
           <AppToast />
           <RootStack />
           <ImageLoading />
-        </Host>
+        </PortalProvider>
       </NavigationContainer>
     </GestureHandlerRootView>
   </ThemeProvider>
