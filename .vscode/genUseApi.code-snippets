@@ -1,0 +1,71 @@
+{
+	// Place your swma-mobile workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+  "genUseApi": {
+  "prefix": "genUseApi",
+  "body": [
+    "import { useCallback, useState } from 'react';",
+    "import { PromiseHandler } from '../takeLastest';",
+    "interface IOptions {",
+    "  withoutLoading?: boolean,",
+    "  onSuccess?: (data?: any) => void,",
+    "  onFailed?: (error?: any) => void,",
+    "}",
+    "",
+    "interface IParamApi {",
+    "}",
+    "",
+    "// =====",
+    "export const useShareSuccess = () => {",
+    "  // const save = useSave()",
+    "  const [data, setData] = useState<boolean>()",
+    "  const [isLoading, setIsLoading] = useState(false);",
+    "  const [error, setError] = useState(null);",
+    "",
+    "  const fetch = useCallback(async (params?: IParamApi, options?: IOptions) => {",
+    "    !options?.withoutLoading && setIsLoading(true)",
+    "    try {",
+    "      const response = await handlerFrist.takeLatest(Repo(params))",
+    "      setData(response?.data)",
+    "      // save('',response?.data)",
+    "      options?.onSuccess?.(response?.data)",
+    "    } catch (error: any) {",
+    "      if (!error?.canceled) {",
+    "        setError(error?.message)",
+    "        options?.onFailed?.(error?.message)",
+    "      }",
+    "    } finally {",
+    "      !options?.withoutLoading && setIsLoading(false)",
+    "    }",
+    "  }, [])",
+    "",
+    "  return {",
+    "    fetch,",
+    "    data,",
+    "    isLoading,",
+    "    error,",
+    "  }",
+    "}",
+    "",
+    "// =====",
+    "const handlerFrist = new PromiseHandler();",
+    "",
+    ""
+  ],
+  "description": "genUseApi"
+}
+}
