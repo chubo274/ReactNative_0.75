@@ -54,24 +54,27 @@ class ApiGateway {
 
   execute = (config: IConfigRequest) => {
     const { method, resource, body, isFormDataType, params, queryParams } = config
-    // const { token } = ZustandPersist.getState().get('Token') ?? {}
+    const { token } = ZustandPersist.getState().get('Token') ?? {}
+    const { token: tokenContext } = ZustandPersist.getState().get('Context') ?? {}
+
+    let data = body
+    if (isFormDataType) { data = parseFormData(body) }
+    if (method == 'GET') { data = undefined }
     const headers = {
       'Accept': 'application/json',
       'Content-Type': isFormDataType ? 'multipart/form-data' : 'application/json', // Content-Type = 'application/json' == null
       'sw-access-key': 'SWSCRUDICUUXCTDTDHHKRWW1NA',
-      'Authorization':  '',
+      // 'sw-context-token': '',
     }
-    // headers['Authorization'] = token || ''
-    const url = queryParams ? resource + queryParams : resource
-    let data = body
-    if (isFormDataType) { data = parseFormData(body) }
-    if (method == 'GET') { data = undefined }
+    // @ts-ignore
+    if (token || tokenContext) headers['sw-context-token'] = token || tokenContext
+    const urlQueryParams = resource + `?${qs.stringify(queryParams, { skipNulls: true })}`
 
     const configRequest: AxiosRequestConfig<any> = {
       baseURL: baseUrl.value,
       timeout: this.configTimeout,
       headers,
-      url,
+      url: queryParams ? urlQueryParams : resource,
       method,
       params,
       paramsSerializer: {
@@ -83,19 +86,20 @@ class ApiGateway {
       data
     }
 
+
     switch (method) {
       case 'DELETE':
-        return this._instanceAxios.delete(resource, configRequest)
+        return this._instanceAxios.delete(configRequest.url!, configRequest)
       case 'GET':
-        return this._instanceAxios.get(resource, configRequest)
+        return this._instanceAxios.get(configRequest.url!, configRequest)
       case 'PATCH':
-        return this._instanceAxios.patch(resource, data, configRequest)
+        return this._instanceAxios.patch(configRequest.url!, configRequest?.data, configRequest)
       case 'POST':
-        return this._instanceAxios.post(resource, data, configRequest)
+        return this._instanceAxios.post(configRequest.url!, configRequest?.data, configRequest)
       case 'PUT':
-        return this._instanceAxios.put(resource, data, configRequest)
+        return this._instanceAxios.put(configRequest.url!, configRequest?.data, configRequest)
       case 'POSTFORM':
-        return this._instanceAxios.postForm(resource, data, configRequest)
+        return this._instanceAxios.postForm(configRequest.url!, configRequest?.data, configRequest)
 
       default:
         // @ts-ignore
