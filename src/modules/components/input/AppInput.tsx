@@ -155,6 +155,8 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     fontSize: theme.fontSize.p14,
     lineHeight: theme.dimensions.makeResponsiveSize(20),
     color: theme.color.textColor.primary,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
   },
   viewLabelDefault: {
     position: 'absolute',
