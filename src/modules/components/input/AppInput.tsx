@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { StyleProp, StyleSheet, TextInput, TextInputProps, TextStyle, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from 'react-native';
+import { Platform, StyleProp, StyleSheet, TextInput, TextInputProps, TextStyle, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from 'react-native';
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import ImageSource from 'src/assets/images';
 import { TxtTypo } from 'src/shared/helpers/enum';
@@ -27,6 +27,8 @@ export const AppInput = React.memo((props: IAppInput) => {
   const theme = useAppTheme();
   const styles = useStyles(theme);
   const ref = useRef<TextInput>(null)
+
+  const showCountTxt = useMemo(() => props?.multiline && props?.maxLength, [props?.multiline, props?.maxLength])
 
   // style border by status
   const renderBorderStyle = useMemo(() => {
@@ -71,7 +73,7 @@ export const AppInput = React.memo((props: IAppInput) => {
   const renderIconClear = useCallback(() => {
     if (!value || !onClear) return null
     return <TouchableOpacity activeOpacity={0.8} style={{ marginHorizontal: 4 }} onPress={onClear} hitSlop={{ top: 10, bottom: 10, left: 4, right: 4 }}>
-      <RenderImage source={ImageSource.ic_apple} style={{ width: 16, aspectRatio: 1 }} />
+      <RenderImage svgMode source={ImageSource.icon_circle_x} style={{ width: 16, aspectRatio: 1 }} />
     </TouchableOpacity>
   }, [value, onClear])
 
@@ -81,11 +83,18 @@ export const AppInput = React.memo((props: IAppInput) => {
   }, [iconRight])
 
   const renderErrorMessage = useCallback(() => {
-    if (errorMessage)
+    if (status == 'error' && errorMessage)
       return <AppText typo={TxtTypo.Smallest_R} style={{ paddingTop: 4, color: 'red' }}>
         {errorMessage}
       </AppText>
-  }, [errorMessage])
+  }, [status, errorMessage])
+
+  const renderCountTxt = useCallback(() => {
+    if (showCountTxt)
+      return <View style={styles.countTxt}>
+        <AppText>{`${value?.length}/${props?.maxLength}`}</AppText>
+      </View>
+  }, [styles, value?.length, props?.maxLength, showCountTxt])
 
   // useEffect
   useEffect(() => {
@@ -96,7 +105,7 @@ export const AppInput = React.memo((props: IAppInput) => {
 
   return <>
     <TouchableWithoutFeedback onPress={pressFocus}>
-      <View style={[styles.inputContainer, inputContainerStyle, renderBorderStyle, renderDisableStyle?.bg]} pointerEvents={pointerEvents}>
+      <View style={[styles.inputContainer, inputContainerStyle, renderBorderStyle, renderDisableStyle?.bg, { flexDirection: showCountTxt ? 'column' : 'row' }]} pointerEvents={pointerEvents}>
         <Animated.View style={[styles.viewLabelDefault, stylezLabel]}>
           <Animated.Text style={[styles.txtLabelDefault, stylezTxtLabel, renderDisableStyle?.txt]}>{textLabel}</Animated.Text>
         </Animated.View>
@@ -130,6 +139,7 @@ export const AppInput = React.memo((props: IAppInput) => {
           {renderIconClear()}
           {renderIconRight()}
         </View>
+        {renderCountTxt()}
       </View>
     </TouchableWithoutFeedback>
     {renderErrorMessage()}
@@ -142,7 +152,10 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     paddingHorizontal: theme.dimensions.p16,
-    paddingVertical: theme.dimensions.p12,
+    paddingVertical: Platform.select({
+      android: theme.dimensions.p4,
+      ios: theme.dimensions.p8,
+    })
   },
   inputWrapper: {
     flex: 1,
@@ -153,13 +166,14 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
   inputStyleDefault: {
     flex: 1,
     fontSize: theme.fontSize.p14,
-    lineHeight: theme.dimensions.makeResponsiveSize(20),
+    lineHeight: theme.dimensions.makeResponsiveSize(16),
     color: theme.color.textColor.primary,
     paddingVertical: 0,
     paddingHorizontal: 0,
   },
   viewLabelDefault: {
     position: 'absolute',
+    top: theme.dimensions.p8 - dimensionTransY,
     left: theme.dimensions.p16,
   },
   txtLabelDefault: {
@@ -167,6 +181,11 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     color: theme.color.textColor.primary,
     fontFamily: theme.font.HelveticaNeue,
     fontWeight: 400,
+  },
+  countTxt: {
+    marginTop: 8,
+    width: '100%',
+    alignItems: 'flex-end'
   }
 });
 
