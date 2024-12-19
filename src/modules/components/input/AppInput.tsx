@@ -132,6 +132,7 @@ export const AppInput = React.memo((props: IAppInput) => {
                   if (!value) transY.value = withTiming(0)
                   props.onBlur?.(e);
                 }}
+                textAlignVertical={props?.multiline ? 'top' : undefined}
                 style={[styles.inputStyleDefault, inputStyle, renderDisableStyle?.txt]}
               />
             </View>
