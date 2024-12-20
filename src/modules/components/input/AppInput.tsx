@@ -53,6 +53,14 @@ export const AppInput = React.memo((props: IAppInput) => {
       }
   }, [disabled, theme.color])
 
+  const renderStyleMultiline = useMemo(() => {
+    if (props?.multiline && Platform.OS === 'android') {
+      return {
+        marginTop: theme.dimensions.p4
+      }
+    }
+  }, [, theme.dimensions, props?.multiline])
+
   // animated
   const transY = useSharedValue<number>(0);
   const stylezLabel = useAnimatedStyle((): ViewStyle => ({ transform: [{ translateY: (value || placeholder) ? dimensionTransY : transY.value }] }))
@@ -132,8 +140,8 @@ export const AppInput = React.memo((props: IAppInput) => {
                   if (!value) transY.value = withTiming(0)
                   props.onBlur?.(e);
                 }}
-                textAlignVertical={props?.multiline ? 'top' : undefined}
-                style={[styles.inputStyleDefault, inputStyle, renderDisableStyle?.txt]}
+                textAlignVertical={props.multiline ? 'top' : undefined}
+                style={[styles.inputStyleDefault, inputStyle, renderStyleMultiline, renderDisableStyle?.txt]}
               />
             </View>
           </View>
@@ -182,6 +190,7 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     color: theme.color.textColor.primary,
     fontFamily: theme.font.HelveticaNeue,
     fontWeight: 400,
+    textTransform: 'capitalize'
   },
   countTxt: {
     marginTop: 8,
