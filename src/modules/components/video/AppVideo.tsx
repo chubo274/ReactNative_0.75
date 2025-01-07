@@ -4,23 +4,25 @@ import Video, { ReactVideoProps, ReactVideoSourceProperties, VideoRef } from 're
 import ImageSource from 'src/assets/images';
 import { ITheme, useAppTheme } from 'src/shared/theme';
 import { RenderImage } from '../image/RenderImage';
+import { useIsFocused } from '@react-navigation/native';
 
 interface IProps extends IPropsRenderVideo {
   containerStyle?: ViewStyle
   thumbnail?: string
   layerContent?: React.JSX.Element
-  isFocus?: boolean
+  isCurrent?: boolean
 }
 
 // controls rendervideo
 export const AppVideo = React.memo(React.forwardRef((props: IProps, ref: React.ForwardedRef<VideoRef | null>) => {
   const theme = useAppTheme();
-  const { paused = false, isFocus, containerStyle, thumbnail, layerContent, ...rest } = props;
+  const { paused = false, isCurrent, containerStyle, thumbnail, layerContent, ...rest } = props;
   const styles = useStyles(theme);
 
   // @ts-ignore
   // const refCurrent: VideoRef = ref?.current
   const [isPaused, setIsPaused] = useState<boolean>(Boolean(paused)) // for init state
+  const isFocused = useIsFocused()
 
   const togglePlay = useCallback(() => {
     setIsPaused(!isPaused)
@@ -34,16 +36,18 @@ export const AppVideo = React.memo(React.forwardRef((props: IProps, ref: React.F
   }, [paused])
 
   const renderVideo = useCallback(() => {
+    const paused = !isFocused || !isCurrent || isPaused
     return <RenderVideo
       ref={ref}
-      paused={isPaused || !isFocus}
+      paused={paused}
       thumbnail={thumbnail}
       {...rest}
     />
-  }, [ref, rest, thumbnail, isPaused, isFocus])
+  }, [ref, rest, thumbnail, isPaused, isCurrent, isFocused])
 
   const renderControllerVideo = useCallback(() => {
-    if (isFocus && isPaused) {
+    const showControl = isFocused && isCurrent && isPaused
+    if (showControl) {
       return <View style={styles.viewOtherLayer}>
         <RenderImage
           source={ImageSource.ic_play}
@@ -53,7 +57,7 @@ export const AppVideo = React.memo(React.forwardRef((props: IProps, ref: React.F
       </View>
     }
     return null;
-  }, [isFocus, isPaused, styles])
+  }, [isCurrent, isPaused, isFocused, styles])
 
   return <TouchableOpacity activeOpacity={1} style={[styles.containerView, containerStyle]} onPress={togglePlay}>
     {renderVideo()}
