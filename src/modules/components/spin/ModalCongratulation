@@ -1,0 +1,100 @@
+import BottomSheet from '@gorhom/bottom-sheet';
+import { BlurView as BlurViewComm } from '@react-native-community/blur';
+import LottieView from 'lottie-react-native';
+import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
+import AnimationSource from 'src/assets/animations';
+import ImageSource from 'src/assets/images';
+import { TxtTypo } from 'src/shared/helpers/enum';
+import { ITheme, useAppTheme } from 'src/shared/theme';
+import { AppButton } from '../button/AppButton';
+import { RenderImage } from '../image/RenderImage';
+import { AppBottomSheet } from '../modal/AppBottomSheet';
+import { AppText } from '../text/AppText';
+
+interface IProps {
+  prizeName?: string
+}
+
+export const ModalCongratulation = React.memo(React.forwardRef((props: IProps, ref: React.ForwardedRef<BottomSheet | null>) => {
+  const { prizeName } = props
+  const { t } = useTranslation()
+  const theme = useAppTheme();
+  const styles = useStyles(theme);
+  // @ts-ignore
+  const refModal = ref?.current
+
+  const onClose = useCallback(() => {
+    setTimeout(() => {
+      refModal.close()
+    }, 10)
+  }, [refModal])
+
+  return <AppBottomSheet
+    ref={ref}
+    snapPoints={['70%']}
+    backgroundStyle={{ backgroundColor: 'transparent' }}
+    enableOverDrag={false}
+    handleComponent={null}
+    onClose={onClose}
+  >
+    <View style={{ overflow: 'hidden', marginHorizontal: theme.dimensions.p16, borderRadius: 30, }}>
+      <View pointerEvents="none" style={styles.viewAnimation}>
+        <LottieView
+          source={AnimationSource.congratulation}
+          style={{ width: '100%', height: '100%' }}
+          autoPlay
+          loop
+        />
+      </View>
+      <BlurViewComm
+        style={{
+          zIndex: 1,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          borderRadius: 30,
+          borderWidth: 1,
+          borderColor: theme.color.textColor.subText
+        }}
+        blurType="dark"
+        blurAmount={5}
+        reducedTransparencyFallbackColor="white"
+      />
+      <View style={styles.viewWrapper}>
+        <RenderImage svgMode source={ImageSource.ph_seal_check_fill} style={{ width: 45, height: 45 }} />
+        <AppText typo={TxtTypo.Heading5_M} style={{ paddingTop: theme.dimensions.p16, paddingBottom: theme.dimensions.p12, color: theme.color.white }}>{t('congratulation')}</AppText>
+        <AppText style={{ textAlign: 'center', width: 200, paddingBottom: theme.dimensions.p24, color: theme.color.white }} typo={TxtTypo.Smallest_R}>{t('congratulationTxt') + prizeName}</AppText>
+        <AppButton
+          title={t('gotIt')}
+          onPress={onClose}
+          style={{ paddingHorizontal: 16 }}
+        />
+      </View>
+    </View>
+    {/* overlay press */}
+    <View style={{ flex: 1 }} onTouchEnd={onClose} />
+    <View style={{ height: 1 }} />
+  </AppBottomSheet>
+}));
+
+const useStyles = (theme: ITheme) => StyleSheet.create({
+  viewWrapper: {
+    zIndex: 2,
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: theme.dimensions.p24,
+    justifyContent: 'center',
+  },
+  viewAnimation: {
+    zIndex: 3,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  }
+})
