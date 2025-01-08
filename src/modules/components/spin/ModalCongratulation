@@ -27,7 +27,7 @@ export const ModalCongratulation = React.memo(React.forwardRef((props: IProps, r
 
   const onClose = useCallback(() => {
     setTimeout(() => {
-      refModal.close()
+      refModal?.close()
     }, 10)
   }, [refModal])
 
