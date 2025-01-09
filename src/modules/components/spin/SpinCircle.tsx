@@ -106,7 +106,7 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
           points={`${0},${viewPolygonSize / 2} ${viewPolygonSize},${0} ${viewPolygonSize},${viewPolygonSize}`} // Coordinates of point
           fill={borderCircleColor}
           stroke={borderCircleColor}
-          strokeWidth="2"
+          strokeWidth="1"
         />
       </Svg>
     </View>
