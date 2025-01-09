@@ -1,5 +1,5 @@
 import BottomSheet from '@gorhom/bottom-sheet';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import {
@@ -13,25 +13,23 @@ import {
 } from 'react-native-reanimated';
 import SoundPlayer from 'react-native-sound-player';
 import SoundSource from 'src/assets/sounds';
+import { useLuckyWheel } from 'src/data/hooks/luckeyWheel/useLuckyWheel';
 import { AppButton } from '../button/AppButton';
 import { ModalCongratulation } from './ModalCongratulation';
-import { SpinCircle } from './SpinCircle';
-
-interface CircleSegment {
-  name: string;
-  color: string;
-}
+import { ICircleSegment, SpinCircle } from './SpinCircle';
+import { emitShowToast } from 'src/shared/helpers/function';
 
 interface IProps {
+  turns: number;
   radius: number;
-  segments: CircleSegment[]; // max length is 72
+  segments: ICircleSegment[]; // max length is 72
   pipeColor?: string;
   borderCircle?: number;
   borderCircleColor?: string;
 }
 
 export const LuckyWheel = (props: IProps) => {
-  const { radius, segments, borderCircle, borderCircleColor, pipeColor } = props
+  const { turns, radius, segments, borderCircle, borderCircleColor, pipeColor } = props
   const { t } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState<number>();
   const [disabledSpin, setdisabledSpin] = useState<boolean>(false);
@@ -42,6 +40,8 @@ export const LuckyWheel = (props: IProps) => {
 
   const rotation = useSharedValue(0); // Shared value for rotation
   const nextAngle = useSharedValue(0);
+
+  const { fetch: postSpinned } = useLuckyWheel()
 
   const openModalCongratulation = useCallback(() => {
     setTimeout(() => {
@@ -77,18 +77,44 @@ export const LuckyWheel = (props: IProps) => {
             }
           }),
         );
-        nextAngle.value = 0
       }
       runOnJS(setCurrentIndex)(index);
     }
   });
 
+  // Reset the wheel
+  const resetSpin = useCallback(() => {
+    SoundPlayer.stop()
+    nextAngle.value = 0
+    rotation.value = nextAngleState
+    setCurrentIndex(undefined)
+    setdisabledSpin(false)
+  }, [nextAngleState, rotation])
+
   // random next index
   const caculateNextAngle = useCallback(() => {
-    const nextIndex = Math.floor(Math.random() * (totalSegments - 0)) + 0
-    const caculateNextAngle = 360 - (nextIndex * angleStep + (angleStep / 2))
-    nextAngle.value = caculateNextAngle
-  }, [nextAngle, angleStep, totalSegments])
+    // setTimeout(() => { // demo local without api
+    //   const prizeAngle = Math.floor(Math.random() * (totalSegments - 0)) + 0
+    //   nextAngle.value = prizeAngle
+    // }, 2000);
+
+    postSpinned({
+      onSuccess: (data) => {
+        const index = segments?.findIndex((segment) => segment?.id == data?.id)
+        if (index >= 0) {
+          const _nextAngle = 360 - (index * angleStep + (angleStep / 2))
+          nextAngle.value = _nextAngle
+        }
+      },
+      onFailed: () => {
+        resetSpin()
+        emitShowToast({
+          type: 'Error',
+          toastMessage: t('connectToServerErr')
+        })
+      }
+    })
+  }, [nextAngle, angleStep, totalSegments, postSpinned, segments, resetSpin])
 
   // Spin the wheel
   const startSpin = useCallback(() => {
@@ -98,24 +124,8 @@ export const LuckyWheel = (props: IProps) => {
       withTiming(360, { duration: 1000, easing: Easing.in(Easing.sin) }),
       withTiming(360 * 40, { duration: 30000, easing: Easing.linear }),
     )
-  }, [rotation])
-
-  // Reset the wheel
-  const resetSpin = useCallback(() => {
-    SoundPlayer.stop()
-    // nextAngle.value = 0
-    rotation.value = nextAngleState
-    setCurrentIndex(undefined)
-    setdisabledSpin(false)
-  }, [nextAngleState, rotation])
-
-  useEffect(() => {
-    if (disabledSpin) {
-      setTimeout(() => {
-        caculateNextAngle()
-      }, 1200);
-    }
-  }, [disabledSpin, caculateNextAngle])
+    caculateNextAngle()
+  }, [rotation, caculateNextAngle])
 
   return <View style={styles.container}>
     <SpinCircle
@@ -132,7 +142,7 @@ export const LuckyWheel = (props: IProps) => {
         onPress={startSpin}
         style={{ marginLeft: 16, paddingVertical: 24, paddingHorizontal: 24 }}
         textStyle={{ fontSize: 32, fontWeight: 700, lineHeight: undefined }}
-        disabled={disabledSpin}
+        disabled={!Boolean(turns) || disabledSpin}
       />
       {/* <Button title="caculateNextAngle" onPress={caculateNextAngle} />
       <Button title="Reset" onPress={resetSpin} /> */}
