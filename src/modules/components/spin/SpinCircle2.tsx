@@ -139,6 +139,7 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
 
   // Reset the wheel
   const resetSpin = useCallback(() => {
+    SoundPlayer.stop()
     // nextAngle.value = 0
     rotation.value = nextAngleState
     console.log('nextAngleState', nextAngleState);
