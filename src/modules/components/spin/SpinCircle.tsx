@@ -50,7 +50,7 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
   // Calculate label position
   const getLabelPosition = (startAngle: number, endAngle: number) => {
     const angle = (startAngle + endAngle) / 2; // Midpoint angle
-    const labelRadius = radiusContent * 0.7; // Position labels slightly inward
+    const labelRadius = radiusContent * 0.6; // Position labels slightly inward
     const x = center + labelRadius * Math.cos((angle * Math.PI) / 180);
     const y = center + labelRadius * Math.sin((angle * Math.PI) / 180);
     return { x, y };
@@ -63,7 +63,7 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
 
   // render
   const renderPolygon = useCallback(() => {
-    const viewPolygonSize = Math.min(42, size / (totalSegments / 1.5))
+    const viewPolygonSize = Math.min(32, size / (totalSegments / 1.5))
     return <View style={{ position: 'absolute', top: radius - (viewPolygonSize / 2), right: borderCircle }}>
       <Svg width={viewPolygonSize} height={viewPolygonSize}>
         <Polygon
@@ -114,7 +114,7 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
                   fontSize={14}
                   fill="white"
                 >
-                  {segment.name}
+                  {segment?.name?.slice(0, 16)}
                 </SvgText>
               </React.Fragment>
             );
