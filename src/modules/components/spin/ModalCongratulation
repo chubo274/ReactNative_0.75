@@ -15,21 +15,23 @@ import { AppText } from '../text/AppText';
 
 interface IProps {
   prizeName?: string
+  onClose?: () => void
 }
 
 export const ModalCongratulation = React.memo(React.forwardRef((props: IProps, ref: React.ForwardedRef<BottomSheet | null>) => {
-  const { prizeName } = props
+  const { prizeName, onClose } = props
   const { t } = useTranslation()
   const theme = useAppTheme();
   const styles = useStyles(theme);
   // @ts-ignore
   const refModal = ref?.current
 
-  const onClose = useCallback(() => {
+  const _onClose = useCallback(() => {
+    onClose?.()
     setTimeout(() => {
       refModal?.close()
     }, 10)
-  }, [refModal])
+  }, [refModal, onClose])
 
   return <AppBottomSheet
     ref={ref}
@@ -37,7 +39,7 @@ export const ModalCongratulation = React.memo(React.forwardRef((props: IProps, r
     backgroundStyle={{ backgroundColor: 'transparent' }}
     enableOverDrag={false}
     handleComponent={null}
-    onClose={onClose}
+    onClose={_onClose}
   >
     <View style={{ overflow: 'hidden', marginHorizontal: theme.dimensions.p16, borderRadius: 30, }}>
       <View pointerEvents="none" style={styles.viewAnimation}>
@@ -70,13 +72,13 @@ export const ModalCongratulation = React.memo(React.forwardRef((props: IProps, r
         <AppText style={{ textAlign: 'center', width: 200, paddingBottom: theme.dimensions.p24, color: theme.color.white }} typo={TxtTypo.Smallest_R}>{t('congratulationTxt') + prizeName}</AppText>
         <AppButton
           title={t('gotIt')}
-          onPress={onClose}
+          onPress={_onClose}
           style={{ paddingHorizontal: 16 }}
         />
       </View>
     </View>
     {/* overlay press */}
-    <View style={{ flex: 1 }} onTouchEnd={onClose} />
+    <View style={{ flex: 1 }} onTouchEnd={_onClose} />
     <View style={{ height: 1 }} />
   </AppBottomSheet>
 }));
