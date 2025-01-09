@@ -1,6 +1,7 @@
 import BottomSheet from '@gorhom/bottom-sheet';
-import React, { useCallback, useRef, useState } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -37,7 +38,10 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
   borderCircle = 0,
   borderCircleColor = 'black',
 }) => {
+  const { t } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState<number>();
+  const [disabledSpin, setdisabledSpin] = useState<boolean>(false);
+  const [nextAngleState, setNextAngleState] = useState<number>(0);
   const totalSegments = segments.length;
   const angleStep = 360 / totalSegments;
   const refModal = useRef<BottomSheet>(null)
@@ -69,11 +73,10 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
     return { x, y };
   };
 
-  const playSoundStop = useCallback(() => {
-    SoundPlayer.playAsset(SoundSource.congratulation_wheel)
+  const openModalCongratulation = useCallback(() => {
     setTimeout(() => {
       refModal.current?.snapToIndex(0)
-    }, 1500);
+    }, 10);
   }, [])
 
   // Update the current segment based on rotation
@@ -84,25 +87,31 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
 
       // when caculated the next value, spread angle is 5
       const isCurrentNearNext = nextAngle.value > 0 && ((nextAngle.value - 2) <= rotation.value % 360 && rotation.value % 360 <= (nextAngle.value + 2))
-      if (isCurrentNearNext) {
+      const leastRotation = 360 * 3
+      if (rotation.value >= leastRotation && isCurrentNearNext) {
         runOnJS(SoundPlayer.stop)()
         const currentRotation = rotation.value
         cancelAnimation(rotation);
 
+        runOnJS(SoundPlayer.playAsset)(SoundSource.congratulation_wheel);
         rotation.value = withSequence(
           withTiming(currentRotation, { duration: 0 }), // No abrupt jump
           withTiming(currentRotation + 360, {
             duration: 1500,
             easing: Easing.out(Easing.quad), // Smooth deceleration
-          })
+          }, (finished, current) => {
+            // Trigger callback after the sequence ends
+            if (finished) {
+              runOnJS(openModalCongratulation)();
+              runOnJS(setNextAngleState)(rotation.value % 360);
+            }
+          }),
         );
-
-        runOnJS(playSoundStop)();
         nextAngle.value = 0
       }
       runOnJS(setCurrentIndex)(index);
     }
-  }, []);
+  });
 
   // Animated style for rotation
   const animatedStyle = useAnimatedStyle(() => ({
@@ -110,34 +119,42 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
   }));
 
   // random next index
-  const caculateNextIndex = useCallback(() => {
+  const caculateNextAngle = useCallback(() => {
     const nextIndex = Math.floor(Math.random() * (totalSegments - 0)) + 0
-    return nextIndex
-  }, [totalSegments])
+    const caculateNextAngle = 360 - (nextIndex * angleStep + (angleStep / 2))
+    console.log('nextIndex', nextIndex);
+
+    nextAngle.value = caculateNextAngle
+  }, [nextAngle, angleStep, totalSegments])
 
   // Spin the wheel
   const startSpin = useCallback(() => {
+    setdisabledSpin(true)
     SoundPlayer.playAsset(SoundSource.spinning_wheel)
     rotation.value = withSequence(
-      withTiming(360, { duration: 1200, easing: Easing.in(Easing.sin) }),
+      withTiming(360, { duration: 1000, easing: Easing.in(Easing.sin) }),
       withTiming(360 * 40, { duration: 30000, easing: Easing.linear }),
     )
   }, [rotation])
 
-  // Stop the wheel
-  const stopSpin = useCallback(() => {
-    const nextIndex = caculateNextIndex()
-    const caculateNextAngle = 360 - (nextIndex * angleStep + (angleStep / 2))
-    nextAngle.value = caculateNextAngle
-  }, [angleStep, caculateNextIndex, nextAngle])
-
   // Reset the wheel
   const resetSpin = useCallback(() => {
-    rotation.value = 0
-    nextAngle.value = 0
+    // nextAngle.value = 0
+    rotation.value = nextAngleState
+    console.log('nextAngleState', nextAngleState);
     setCurrentIndex(undefined)
-  }, [rotation, nextAngle])
+    setdisabledSpin(false)
+  }, [nextAngleState, rotation])
 
+  useEffect(() => {
+    if (disabledSpin) {
+      setTimeout(() => {
+        caculateNextAngle()
+      }, 1200);
+    }
+  }, [disabledSpin, caculateNextAngle])
+
+  // render
   const renderPolygon = useCallback(() => {
     const viewPolygonSize = Math.min(42, size / (totalSegments / 1.5))
     return <View style={{ position: 'absolute', top: radius - (viewPolygonSize / 2), right: borderCircle }}>
@@ -146,7 +163,7 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
           points={`${0},${viewPolygonSize / 2} ${viewPolygonSize},${0} ${viewPolygonSize},${viewPolygonSize}`} // Coordinates of point
           fill={borderCircleColor}
           stroke={borderCircleColor}
-          strokeWidth="2"
+          strokeWidth="1"
         />
       </Svg>
     </View>
@@ -206,20 +223,21 @@ export const SpinCircle: React.FC<SpinCircleProps> = ({
       </Text> */}
       <ModalCongratulation
         ref={refModal}
+        onClose={resetSpin}
         // @ts-ignore
         prizeName={segments?.[currentIndex]?.name} />
     </View>
 
     <View style={{ justifyContent: 'center' }}>
       <AppButton
-        title="Spin"
+        title={t('spin')}
         onPress={startSpin}
         style={{ marginLeft: 16, paddingVertical: 24, paddingHorizontal: 24 }}
         textStyle={{ fontSize: 32, fontWeight: 700, lineHeight: undefined }}
-        // disabled={true}
+        disabled={disabledSpin}
       />
-      <Button title="Stop" onPress={stopSpin} />
-      <Button title="Reset" onPress={resetSpin} />
+      {/* <Button title="caculateNextAngle" onPress={caculateNextAngle} />
+      <Button title="Reset" onPress={resetSpin} /> */}
     </View>
   </View>
 };
