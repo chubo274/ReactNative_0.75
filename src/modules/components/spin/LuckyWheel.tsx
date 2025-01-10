@@ -14,15 +14,27 @@ import {
 import SoundPlayer from 'react-native-sound-player';
 import SoundSource from 'src/assets/sounds';
 import { useLuckyWheel } from 'src/data/hooks/luckeyWheel/useLuckyWheel';
+import { emitShowToast } from 'src/shared/helpers/function';
 import { AppButton } from '../button/AppButton';
 import { ModalCongratulation } from './ModalCongratulation';
 import { ICircleSegment, SpinCircle } from './SpinCircle';
-import { emitShowToast } from 'src/shared/helpers/function';
 
+const listWaitForApi: ICircleSegment[] = [
+  { id: '1', name: '', color: '#1b4534' },
+  { id: '2', name: '', color: '#62d6b4' },
+  { id: '3', name: '', color: '#1b4534' },
+  { id: '4', name: '', color: '#62d6b4' },
+  { id: '5', name: '', color: '#1b4534' },
+  { id: '6', name: '', color: '#62d6b4' },
+  { id: '7', name: '', color: '#1b4534' },
+  { id: '8', name: '', color: '#62d6b4' },
+  { id: '9', name: '', color: '#1b4534' },
+  { id: '10', name: '', color: '#62d6b4' },
+]
 interface IProps {
   turns: number;
   radius: number;
-  segments: ICircleSegment[]; // max length is 72
+  segments?: ICircleSegment[]; // max length is 72 because spred stop = 5
   pipeColor?: string;
   borderCircle?: number;
   borderCircleColor?: string;
@@ -34,12 +46,13 @@ export const LuckyWheel = (props: IProps) => {
   const [currentIndex, setCurrentIndex] = useState<number>();
   const [disabledSpin, setdisabledSpin] = useState<boolean>(false);
   const [nextAngleState, setNextAngleState] = useState<number>(0);
-  const totalSegments = segments.length;
+  const totalSegments = segments?.length || listWaitForApi.length; // fallback
   const angleStep = 360 / totalSegments;
   const refModal = useRef<BottomSheet>(null)
 
   const rotation = useSharedValue(0); // Shared value for rotation
   const nextAngle = useSharedValue(0);
+  const isStoping = useSharedValue(false);
 
   const { fetch: postSpinned } = useLuckyWheel()
 
@@ -55,10 +68,11 @@ export const LuckyWheel = (props: IProps) => {
       const angleRotated = rotation.value % 360
       const index = Math.floor((360 - angleRotated) / angleStep) // index change follow the spin
 
-      // when caculated the next value, spread angle is 5
-      const isCurrentNearNext = nextAngle.value > 0 && ((nextAngle.value - 2) <= rotation.value % 360 && rotation.value % 360 <= (nextAngle.value + 2))
+      // when caculated the next value, spread angle is 3
+      const isCurrentNearNext = nextAngle.value > 0 && ((nextAngle.value - 2) < rotation.value % 360 && rotation.value % 360 < (nextAngle.value + 2))
       const leastRotation = 360 * 3
-      if (rotation.value >= leastRotation && isCurrentNearNext) {
+      if (rotation.value >= leastRotation && isCurrentNearNext && !isStoping.value) {
+        isStoping.value = true
         runOnJS(SoundPlayer.stop)()
         const currentRotation = rotation.value
         cancelAnimation(rotation);
@@ -67,10 +81,9 @@ export const LuckyWheel = (props: IProps) => {
         rotation.value = withSequence(
           withTiming(currentRotation, { duration: 0 }), // No abrupt jump
           withTiming(currentRotation + 360, {
-            duration: 1500,
+            duration: 2000,
             easing: Easing.out(Easing.quad), // Smooth deceleration
           }, (finished, current) => {
-            // Trigger callback after the sequence ends
             if (finished) {
               runOnJS(openModalCongratulation)();
               runOnJS(setNextAngleState)(rotation.value % 360);
@@ -86,23 +99,33 @@ export const LuckyWheel = (props: IProps) => {
   const resetSpin = useCallback(() => {
     SoundPlayer.stop()
     nextAngle.value = 0
+    isStoping.value = false
     rotation.value = nextAngleState
     setCurrentIndex(undefined)
     setdisabledSpin(false)
-  }, [nextAngleState, rotation])
+  }, [nextAngle, isStoping, nextAngleState, rotation])
 
   // random next index
   const caculateNextAngle = useCallback(() => {
-    // setTimeout(() => { // demo local without api
-    //   const prizeAngle = Math.floor(Math.random() * (totalSegments - 0)) + 0
-    //   nextAngle.value = prizeAngle
-    // }, 2000);
+    // // Math.random value: [0, 1). is mean 0% -> 99%
+    // // Random result is index: 0 -> (totalSegments -1)
+    // const index = Math.floor(Math.random() * (totalSegments))
+    // if (index >= 0) {
+    //   // it mean, pointer will not stop at any stroke
+    //   const nextPosition = Math.floor(Math.random() * (angleStep - 1)) + 1
+    //   const _nextAngle = 360 - (index * angleStep) + nextPosition
+    //   setTimeout(() => {
+    //     nextAngle.value = _nextAngle
+    //   }, 2000);
+    // }
 
+    // index by api
     postSpinned({
       onSuccess: (data) => {
         const index = segments?.findIndex((segment) => segment?.id == data?.id)
-        if (index >= 0) {
-          const _nextAngle = 360 - (index * angleStep + (angleStep / 2))
+        if (index && index >= 0) {
+          const nextPosition = Math.floor(Math.random() * (angleStep - 1)) + 1
+          const _nextAngle = 360 - (index * angleStep) + nextPosition
           nextAngle.value = _nextAngle
         }
       },
@@ -114,7 +137,7 @@ export const LuckyWheel = (props: IProps) => {
         })
       }
     })
-  }, [nextAngle, angleStep, totalSegments, postSpinned, segments, resetSpin])
+  }, [t, nextAngle, angleStep, postSpinned, segments, resetSpin])
 
   // Spin the wheel
   const startSpin = useCallback(() => {
@@ -131,7 +154,7 @@ export const LuckyWheel = (props: IProps) => {
     <SpinCircle
       radius={radius}
       rotation={rotation}
-      segments={segments}
+      segments={segments?.length ? segments : listWaitForApi} // fallback for circle with element ''
       borderCircle={borderCircle}
       borderCircleColor={borderCircleColor}
       pipeColor={pipeColor}
@@ -142,7 +165,7 @@ export const LuckyWheel = (props: IProps) => {
         onPress={startSpin}
         style={{ marginLeft: 16, paddingVertical: 24, paddingHorizontal: 24 }}
         textStyle={{ fontSize: 32, fontWeight: 700, lineHeight: undefined }}
-        disabled={!Boolean(turns) || disabledSpin}
+        disabled={!Boolean(turns) || !Boolean(segments?.length) || disabledSpin}
       />
       {/* <Button title="caculateNextAngle" onPress={caculateNextAngle} />
       <Button title="Reset" onPress={resetSpin} /> */}
