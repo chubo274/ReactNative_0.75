@@ -16,6 +16,8 @@ import { AppToast } from 'components/toast/AppToast';
 import React, { useRef } from 'react';
 import { Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { PortalProvider } from '@gorhom/portal';
 import NavigationService from 'shared/helpers/NavigationService';
 import ThemeProvider from 'shared/theme';
@@ -33,38 +35,42 @@ const App = () => {
   configureLocalization(LANGUAGES.ENGLISH);
 
   return <ThemeProvider>
+  <SafeAreaProvider>
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer
-        ref={(ref: NavigationContainerRef<any>) => {
-          NavigationService.setTopLevelNavigator(ref);
-          navigationRef.current = ref;
-        }}
-        onReady={() => {
-          routeNameRef.current = navigationRef.current.getCurrentRoute().name;
-        }}
-        onStateChange={async () => {
+      <KeyboardProvider navigationBarTranslucent={true} statusBarTranslucent={true}>
+        <NavigationContainer
+          ref={(ref: NavigationContainerRef<any>) => {
+            NavigationService.setTopLevelNavigator(ref);
+            navigationRef.current = ref;
+          }}
+          onReady={() => {
+            routeNameRef.current = navigationRef.current.getCurrentRoute().name;
+          }}
+          onStateChange={async () => {
 
-          const previousRouteName = routeNameRef.current;
-          const currentRouteName = navigationRef.current.getCurrentRoute().name;
+            const previousRouteName = routeNameRef.current;
+            const currentRouteName = navigationRef.current.getCurrentRoute().name;
 
-          if (previousRouteName !== currentRouteName) {
-            // await analytics().logScreenView({
-            //     screen_name: currentRouteName,
-            //     screen_class: currentRouteName,
-            // });
-          }
+            if (previousRouteName !== currentRouteName) {
+              // await analytics().logScreenView({
+              //     screen_name: currentRouteName,
+              //     screen_class: currentRouteName,
+              // });
+            }
 
-        }}
-      >
-        <PortalProvider>
-          <StatusBar barStyle={Platform.select({ android: 'light-content', ios: 'dark-content', })} />
-          <AppToast />
-          <RootStack />
-          <ImageLoading />
-        </PortalProvider>
-      </NavigationContainer>
+          }}
+        >
+          <PortalProvider>
+            <StatusBar barStyle={Platform.select({ android: 'light-content', ios: 'dark-content', })} />
+            <AppToast />
+            <RootStack />
+            <ImageLoading />
+          </PortalProvider>
+        </NavigationContainer>
+      </KeyboardProvider
     </GestureHandlerRootView>
-  </ThemeProvider>
+  </SafeAreaProvider>
+</ThemeProvider>
 };
 
 export default App;
