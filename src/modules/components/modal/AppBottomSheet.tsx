@@ -1,7 +1,7 @@
 import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetProps, SNAP_POINT_TYPE } from '@gorhom/bottom-sheet';
 import { Portal } from '@gorhom/portal';
 import React, { useCallback, useRef } from 'react';
-import { TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { SharedValue } from 'react-native-reanimated';
 
 interface IProps extends Omit<BottomSheetProps, 'onClose'> {
@@ -16,6 +16,7 @@ export const AppBottomSheet = React.memo(React.forwardRef((props: IProps, ref: R
   const currentSnapIndex = useRef<number>(-1); // Track current index
 
   const close = useCallback(() => {
+    Keyboard.dismiss()
     // @ts-ignore
     ref?.current!.close()
   }, [ref])
@@ -25,11 +26,9 @@ export const AppBottomSheet = React.memo(React.forwardRef((props: IProps, ref: R
     const hasClosed = currentSnapIndex.current >= 0 && index === -1;
     // const hasClosed = index === -1;
 
-    if (hasOpened) {
-      onOpen?.()
-    }
-
+    if (hasOpened) onOpen?.()
     if (hasClosed) {
+      Keyboard.dismiss()
       onClose?.()
     }
     onChange?.(index, position, type)
