@@ -1,7 +1,8 @@
 import BottomSheet from '@gorhom/bottom-sheet';
-import React, { useCallback, useRef, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { AppState, StyleSheet, View } from 'react-native';
 import {
   cancelAnimation,
   Easing,
@@ -43,18 +44,29 @@ interface IProps {
 export const LuckyWheel = (props: IProps) => {
   const { turns, radius, segments, borderCircle, borderCircleColor, pipeColor } = props
   const { t } = useTranslation()
-  const [currentIndex, setCurrentIndex] = useState<number>();
-  const [disabledSpin, setdisabledSpin] = useState<boolean>(false);
-  const [nextAngleState, setNextAngleState] = useState<number>(0);
   const totalSegments = segments?.length || listWaitForApi.length; // fallback
   const angleStep = 360 / totalSegments;
-  const refModal = useRef<BottomSheet>(null)
 
-  const rotation = useSharedValue(0); // Shared value for rotation
-  const nextAngle = useSharedValue(0);
-  const isStoping = useSharedValue(false);
+  const isFocus = useIsFocused()
+  const refModal = useRef<BottomSheet>(null)
+  const [currentIndex, setCurrentIndex] = useState<number>();
+  const [isSpining, setIsSpining] = useState<boolean>(false); // when turn = 0, or spining
+  const [nextAngleState, setNextAngleState] = useState<number>(0); // rotation coordinates of next position - state // not reset for each turn
+  const [needShowCongratulation, setNeedShowCongratulation] = useState<boolean>(false); // show modal when spining done, no err, focused at lucky wheel
+  const [playingSoundCongratulation, setplayingSoundCongratulation] = useState<boolean>(false);
+
+  const rotation = useSharedValue(0); // total number of degrees the wheel rotated
+  const nextAngle = useSharedValue(0); // rotation coordinates of next position - animated // reset for each turn
+  const isStoping = useSharedValue(false); // flag check animation stoping
 
   const { fetch: postSpinned } = useLuckyWheel()
+
+  const soundonCongratulation = useCallback(() => {
+    if (isFocus) {
+      SoundPlayer.playAsset(SoundSource.congratulation_wheel)
+      setplayingSoundCongratulation(true)
+    }
+  }, [isFocus])
 
   const openModalCongratulation = useCallback(() => {
     setTimeout(() => {
@@ -77,7 +89,7 @@ export const LuckyWheel = (props: IProps) => {
         const currentRotation = rotation.value
         cancelAnimation(rotation);
 
-        runOnJS(SoundPlayer.playAsset)(SoundSource.congratulation_wheel);
+        runOnJS(soundonCongratulation)();
         rotation.value = withSequence(
           withTiming(currentRotation, { duration: 0 }), // No abrupt jump
           withTiming(currentRotation + 360, {
@@ -85,7 +97,7 @@ export const LuckyWheel = (props: IProps) => {
             easing: Easing.out(Easing.quad), // Smooth deceleration
           }, (finished, current) => {
             if (finished) {
-              runOnJS(openModalCongratulation)();
+              runOnJS(setNeedShowCongratulation)(true);
               runOnJS(setNextAngleState)(rotation.value % 360);
             }
           }),
@@ -102,7 +114,9 @@ export const LuckyWheel = (props: IProps) => {
     isStoping.value = false
     rotation.value = nextAngleState
     setCurrentIndex(undefined)
-    setdisabledSpin(false)
+    setIsSpining(false)
+    setNeedShowCongratulation(false)
+    setplayingSoundCongratulation(false)
   }, [nextAngle, isStoping, nextAngleState, rotation])
 
   // random next index
@@ -141,7 +155,7 @@ export const LuckyWheel = (props: IProps) => {
 
   // Spin the wheel
   const startSpin = useCallback(() => {
-    setdisabledSpin(true)
+    setIsSpining(true)
     SoundPlayer.playAsset(SoundSource.spinning_wheel)
     rotation.value = withSequence(
       withTiming(360, { duration: 1000, easing: Easing.in(Easing.sin) }),
@@ -149,6 +163,31 @@ export const LuckyWheel = (props: IProps) => {
     )
     caculateNextAngle()
   }, [rotation, caculateNextAngle])
+
+  // handle sound
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState != 'active') SoundPlayer.pause()
+      if (nextAppState == 'active') SoundPlayer.resume()
+    });
+
+    return () => subscription.remove();
+  }, []);
+
+  useEffect(() => {
+    if (isFocus) {
+      SoundPlayer.resume()
+      if (needShowCongratulation) {
+        if (!playingSoundCongratulation) {
+          SoundPlayer.playAsset(SoundSource.congratulation_wheel)
+          SoundPlayer.seek(1)
+        }
+        openModalCongratulation()
+      }
+    } else {
+      SoundPlayer.pause()
+    }
+  }, [isFocus, needShowCongratulation, playingSoundCongratulation, openModalCongratulation])
 
   return <View style={styles.container}>
     <SpinCircle
@@ -165,7 +204,7 @@ export const LuckyWheel = (props: IProps) => {
         onPress={startSpin}
         style={{ marginLeft: 16, paddingVertical: 24, paddingHorizontal: 24 }}
         textStyle={{ fontSize: 32, fontWeight: 700, lineHeight: undefined }}
-        disabled={!Boolean(turns) || !Boolean(segments?.length) || disabledSpin}
+        disabled={!Boolean(turns) || !Boolean(segments?.length) || isSpining}
       />
       {/* <Button title="caculateNextAngle" onPress={caculateNextAngle} />
       <Button title="Reset" onPress={resetSpin} /> */}
