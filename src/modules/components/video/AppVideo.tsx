@@ -2,33 +2,48 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Video, { ReactVideoProps, ReactVideoSourceProperties, VideoRef } from 'react-native-video';
 import ImageSource from 'src/assets/images';
+import Closure from 'src/shared/helpers/Closure';
 import { ITheme, useAppTheme } from 'src/shared/theme';
 import { RenderImage } from '../image/RenderImage';
-import { useIsFocused } from '@react-navigation/native';
+
+interface IPropsRenderVideo extends Omit<ReactVideoProps, 'source' | 'isFocus' | 'controls' | 'poster'> {
+  source?: ReactVideoSourceProperties
+  thumbnail?: string
+}
 
 interface IProps extends IPropsRenderVideo {
   containerStyle?: ViewStyle
   thumbnail?: string
   layerContent?: React.JSX.Element
-  isCurrent?: boolean
+  doubleTap?: () => void
 }
 
+const closure = new Closure()
 // controls rendervideo
 export const AppVideo = React.memo(React.forwardRef((props: IProps, ref: React.ForwardedRef<VideoRef | null>) => {
   const theme = useAppTheme();
-  const { paused = false, isCurrent, containerStyle, thumbnail, layerContent, ...rest } = props;
+  const { paused = false, containerStyle, thumbnail, layerContent, source, doubleTap, ...rest } = props;
   const styles = useStyles(theme);
 
-  // @ts-ignore
-  // const refCurrent: VideoRef = ref?.current
   const [isPaused, setIsPaused] = useState<boolean>(Boolean(paused)) // for init state
-  const isFocused = useIsFocused()
+  const [isShowController, setIsShowController] = useState<boolean>(false)
+  const [isBuffering, setIsBuffering] = useState(false);
 
   const togglePlay = useCallback(() => {
     setIsPaused(!isPaused)
+    setIsShowController(!isPaused)
   }, [isPaused])
 
+  const handleTapOnVideo = useCallback(() => {
+    if (doubleTap) {
+      closure.handleTap(togglePlay, doubleTap)
+    } else {
+      togglePlay()
+    }
+  }, [togglePlay, doubleTap])
+
   useEffect(() => {
+    setIsShowController(false)
     setIsPaused((prev: boolean) => {
       if (prev != paused) return Boolean(paused);
       return prev
@@ -36,69 +51,62 @@ export const AppVideo = React.memo(React.forwardRef((props: IProps, ref: React.F
   }, [paused])
 
   const renderVideo = useCallback(() => {
-    const paused = !isFocused || !isCurrent || isPaused
-    return <RenderVideo
+    return <Video
       ref={ref}
-      paused={paused}
-      thumbnail={thumbnail}
+      resizeMode={'cover'}
+      playWhenInactive={false}
       {...rest}
+      playInBackground={true} // Keep video loaded
+      paused={isPaused}
+      controls={false}
+      source={source}
+      ignoreSilentSwitch={'ignore'}
+      hideShutterView
+      shutterColor={'transparent'}
+      style={[styles.videoStyleDefault, props.style]}
+      onBuffer={({ isBuffering }) => {
+        closure.debounce(() => setIsBuffering(isBuffering), 200)
+        if (!isBuffering && closure?.timer) {
+          clearTimeout(closure.timer)
+          setIsBuffering(false)
+        }
+      }}
+      poster={thumbnail ? {
+        source: {
+          uri: thumbnail,
+        },
+        resizeMode: 'cover',
+        style: {
+          width: '100%',
+          height: '100%'
+        }
+      } : undefined}
+      viewType={1} // 1 = ViewType.SURFACE (better performance)
     />
-  }, [ref, rest, thumbnail, isPaused, isCurrent, isFocused])
+  }, [ref, rest, thumbnail, isPaused, source, styles.videoStyleDefault, props.style])
 
   const renderControllerVideo = useCallback(() => {
-    const showControl = isFocused && isCurrent && isPaused
-    if (showControl) {
-      return <View style={styles.viewOtherLayer}>
-        <RenderImage
-          source={ImageSource.ic_play}
-          style={styles.viewPlay}
-          svgMode
-        />
-      </View>
-    }
-    return null;
-  }, [isCurrent, isPaused, isFocused, styles])
+    if (!isShowController && !isBuffering) return null
+    return <View style={styles.viewOtherLayer}>
+      {isBuffering && <RenderImage source={ImageSource.gif_Ellipsis} style={styles.imgGif} />}
+      {(isShowController && !isBuffering) && <RenderImage
+        source={ImageSource.ic_play}
+        style={styles.viewPlay}
+        svgMode
+      />}
+    </View>
+  }, [isShowController, styles, isBuffering])
 
-  return <TouchableOpacity activeOpacity={1} style={[styles.containerView, containerStyle]} onPress={togglePlay}>
+  return <TouchableOpacity
+    activeOpacity={1}
+    disabled={isBuffering}
+    style={[styles.containerView, containerStyle]}
+    onPress={handleTapOnVideo}
+  >
     {renderVideo()}
     {renderControllerVideo()}
     {layerContent}
   </TouchableOpacity>
-}))
-
-// sub common, dont need export
-interface IPropsRenderVideo extends Omit<ReactVideoProps, 'source' | 'isFocus' | 'controls' | 'poster'> {
-  source?: ReactVideoSourceProperties
-  thumbnail?: string
-}
-const RenderVideo = React.memo(React.forwardRef((props: IPropsRenderVideo, ref: React.ForwardedRef<VideoRef | null>) => {
-  const { source, thumbnail, ...rest } = props
-  const theme = useAppTheme();
-  const styles = useStyles(theme);
-
-  return <Video
-    ref={ref}
-    resizeMode={'cover'}
-    playWhenInactive={false}
-    playInBackground={false}
-    {...rest}
-    controls={false}
-    source={source}
-    ignoreSilentSwitch={'ignore'}
-    hideShutterView
-    shutterColor={'transparent'}
-    style={[styles.videoStyleDefault, props.style]}
-    poster={thumbnail ? {
-      source: {
-        uri: thumbnail,
-      },
-      resizeMode: 'cover',
-      style: {
-        width: '100%',
-        height: '100%'
-      }
-    } : undefined}
-  />
 }))
 
 const useStyles = (theme: ITheme) => StyleSheet.create({
@@ -125,5 +133,9 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
   viewPlay: {
     width: 84,
     height: 84,
-  }
+  },
+  imgGif: {
+    width: 80,
+    height: 40,
+  },
 });
