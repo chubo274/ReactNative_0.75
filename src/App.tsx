@@ -7,6 +7,7 @@
  *
  * @format
  */
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import {
   NavigationContainer,
   NavigationContainerRef
@@ -16,11 +17,11 @@ import { AppToast } from 'components/toast/AppToast';
 import React, { useRef } from 'react';
 import { Platform, StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { KeyboardProvider } from "react-native-keyboard-controller";
-import { PortalProvider } from '@gorhom/portal';
 import NavigationService from 'shared/helpers/NavigationService';
 import ThemeProvider from 'shared/theme';
+import { ModalAskLogin } from './modules/components/modal/ModalAskLogin';
 import RootStack from './modules/navigation';
 import { LANGUAGES } from './shared/helpers/enum';
 import { configureLocalization } from './shared/localization';
@@ -35,9 +36,8 @@ const App = () => {
   configureLocalization(LANGUAGES.ENGLISH);
 
   return <ThemeProvider>
-  <SafeAreaProvider>
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardProvider navigationBarTranslucent={true} statusBarTranslucent={true}>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <NavigationContainer
           ref={(ref: NavigationContainerRef<any>) => {
             NavigationService.setTopLevelNavigator(ref);
@@ -60,17 +60,19 @@ const App = () => {
 
           }}
         >
-          <PortalProvider>
-            <StatusBar barStyle={Platform.select({ android: 'light-content', ios: 'dark-content', })} />
-            <AppToast />
-            <RootStack />
-            <ImageLoading />
-          </PortalProvider>
+          <AppToast />
+          <ImageLoading />
+          <KeyboardProvider navigationBarTranslucent={true} statusBarTranslucent={true}>
+            <BottomSheetModalProvider>
+              <StatusBar barStyle={Platform.select({ android: 'light-content', ios: 'dark-content', })} />
+              <RootStack />
+              <ModalAskLogin />
+            </BottomSheetModalProvider>
+          </KeyboardProvider>
         </NavigationContainer>
-      </KeyboardProvider
-    </GestureHandlerRootView>
-  </SafeAreaProvider>
-</ThemeProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
+  </ThemeProvider>
 };
 
 export default App;
