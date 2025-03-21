@@ -4,59 +4,43 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { ZustandPersistModel } from './IZustandPersistModel';
 
 // config store
-type UseSave = <K extends keyof ZustandPersistModel, V extends ZustandPersistModel[K]>(key: K, value: V, mode?: 'update') => void;
-type UseGet = <K extends keyof ZustandPersistModel>(key: K) => ZustandPersistModel[K];
-type UseClear = <K extends keyof ZustandPersistModel>(key: K) => void;
-
-interface IRootState {
-  state: ZustandPersistModel;
-  save: UseSave;
-  get: UseGet;
-  clear: UseClear;
+interface IRootState extends ZustandPersistModel {
+  save<K extends keyof ZustandPersistModel, V extends ZustandPersistModel[K]>(key: K, value: V, mode?: 'update'): void;
+  hydrated: boolean | undefined
+  changeHydrated(zustandReady: boolean): void
 }
 
-const ZustandPersist = create<IRootState>()(
-  persist(
-    (set, get) => ({
-      state: {},
-      save: (key, value, mode) => {
-        const rootState = get().state;
-        const prevState = rootState[key];
-        if (mode && Boolean(prevState)) {
+const ZustandPersist = create<IRootState>()(persist(
+  (set, get) => ({
+    hydrated: undefined,
+    save: (key, value, mode) => {
+      const prevState = get()?.[key];
+      if (mode && Boolean(prevState)) {
 
-          if (typeof prevState === 'object' && !Array.isArray(prevState)) {
-            return set({
-              state: {
-                ...rootState,
-                // @ts-ignore
-                [key]: { ...prevState, ...value },
-              },
-            });
-          }
-
-          console.error(`typeof ${key} maybe not is object or undefined`);
-          return rootState;
+        if (typeof prevState === 'object' && !Array.isArray(prevState)) {
+          return set({
+            // @ts-ignore
+            [key]: { ...prevState, ...value },
+          });
         }
 
-        return set({
-          state: { ...rootState, [key]: value },
-        });
-      },
-      get: (key) => get().state[key],
-      clear: (key) => {
-        const rootState = { ...get().state };
-        delete rootState[key]; // 🔥 Xóa đúng key thay vì set `undefined`
-        set({ state: rootState });
-      },
-    }),
-    {
-      name: 'Zustand-Persist',
-      storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
-);
+        console.error(`typeof ${key} maybe not is object or undefined`);
+        return;
+      }
 
-export const useSavePersist = () => ZustandPersist((rootState) => rootState?.save);
-export const useGetPersist = <K extends keyof ZustandPersistModel>(key: K) => ZustandPersist((rootState) => rootState?.state?.[key]);
+      return set({ [key]: value });
+    },
+    changeHydrated: (nextState: boolean) => set({ hydrated: nextState })
+  }),
+  {
+    name: 'Zustand-Persist',
+    storage: createJSONStorage(() => AsyncStorage),
+
+    onRehydrateStorage: () => (state) => {
+      console.info('🚀 Rehydration started', state);
+      state?.changeHydrated(true)
+    },
+  })
+);
 
 export default ZustandPersist
