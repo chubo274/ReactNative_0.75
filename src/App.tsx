@@ -15,7 +15,7 @@ import {
 import { ImageLoading } from 'components/image/ImageLoading';
 import { AppToast } from 'components/toast/AppToast';
 import React, { useRef } from 'react';
-import { Platform, StatusBar } from 'react-native';
+import { StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -64,7 +64,7 @@ const App = () => {
           <ImageLoading />
           <KeyboardProvider navigationBarTranslucent={true} statusBarTranslucent={true}>
             <BottomSheetModalProvider>
-              <StatusBar barStyle={Platform.select({ android: 'light-content', ios: 'dark-content', })} />
+              <StatusBar barStyle={'dark-content'} translucent={false} backgroundColor="transparent" />
               <RootStack />
               <ModalAskLogin />
             </BottomSheetModalProvider>
