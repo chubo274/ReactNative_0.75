@@ -24,7 +24,7 @@ const RootStack = (props: IProps) => {
   // That got a issue, useEffect in this file run first before access_token clear by force logout
 
   return <Stack.Navigator
-    initialRouteName={'AppSplash'}
+    initialRouteName={'App'}
     screenOptions={{
       headerMode: 'screen',
       presentation: 'card',

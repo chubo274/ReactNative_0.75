@@ -12,5 +12,6 @@ const vi: iLocalization = {
   loading: 'Đang tải...',
   changeLanguage: 'Đổi ngôn ngữ',
   tokenTimeout: 'Hết hạn phiên đăng nhập',
+  helloNewFriend: 'Chào bạn mới',
 }
 export default vi;

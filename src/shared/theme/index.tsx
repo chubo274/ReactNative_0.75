@@ -29,7 +29,7 @@ const ThemeContext = React.createContext<ITheme>({
 export const useAppTheme = () => useContext(ThemeContext);
 
 const ThemeProvider = ({ children }: any) => {
-  const themeColor = ZustandPersist.getState().get('ThemeApp');
+  const themeColor = ZustandPersist.getState().ThemeApp;
 
   const changeTheme = useCallback((value?: ModeTheme) => {
     const nextValue = value ?? ModeTheme.Default

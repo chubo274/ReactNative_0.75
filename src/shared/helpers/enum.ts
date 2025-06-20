@@ -29,3 +29,22 @@ export enum DateTimeFormat {
   TimeHourMinPM = 'HH:mm aaa',
   HourMinutes = 'HH:mm',
 }
+
+export enum TxtTypo {
+  Smallest_R = 'Smallest_R',
+  Smallest_B = 'Smallest_B',
+  Bodysmall_R = 'Bodysmall_R',
+  Bodysmall_B = 'Bodysmall_B',
+  Body_R = 'Body_R',
+  Body_B = 'Body_B',
+  Heading5_R = 'Heading5_R',
+  Heading5_B = 'Heading5_B',
+  Heading4_R = 'Heading4_R',
+  Heading4_B = 'Heading4_B',
+  Heading3_R = 'Heading3_R',
+  Heading3_B = 'Heading3_B',
+  Heading2 = 'Heading2',
+  Heading1 = 'Heading1',
+  Display2 = 'Display2',
+  Display1 = 'Display1',
+}

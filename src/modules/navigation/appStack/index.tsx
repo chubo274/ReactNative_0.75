@@ -3,8 +3,10 @@ import React from 'react'
 import { AppStackParamList } from '../AppParamsList'
 import { CreateHeaderDefault } from '../configHeader'
 import AppTab from './AppTab'
+import AuthStack from '../authStack'
 
 const Stack = createStackNavigator<AppStackParamList>();
+
 
 interface IProps { }
 
@@ -12,7 +14,10 @@ const AppStack = (props: IProps) => {
   const defaultOptions = CreateHeaderDefault();
 
   return <Stack.Navigator screenOptions={defaultOptions} initialRouteName={'AppTab'}>
+    {/* AppTab */}
     <Stack.Screen name="AppTab" component={AppTab} options={{ headerShown: false }} />
+    {/* AuthStack */}
+    {/* <Stack.Screen name="AuthStack" component={AuthStack} options={{ headerShown: false }} /> */}
   </Stack.Navigator>
 }
 

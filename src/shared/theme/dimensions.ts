@@ -44,7 +44,8 @@ const statusBarHeight = Platform.select({
   default: 0
 })
 
-const heightHeader = Platform.OS == 'ios' ? (isIphoneDynamicIsland() ? 120 : (isIphoneX() ? 100 : 80)) : 60
+// const heightHeader = Platform.OS == 'ios' ? (isIphoneDynamicIsland() ? 120 : (isIphoneX() ? 100 : 80)) : 60
+const heightHeader = 50 + (initialWindowMetrics?.insets?.top || 0)
 
 const dimensions = {
   androidBottomNavHeight: Platform.OS === 'android' ? navbarHeight : 0,

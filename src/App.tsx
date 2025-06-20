@@ -21,7 +21,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import NavigationService from 'shared/helpers/NavigationService';
 import ThemeProvider from 'shared/theme';
-import { ModalAskLogin } from './modules/components/modal/ModalAskLogin';
+// import { ModalAskLogin } from './modules/components/modal/ModalAskLogin';
 import RootStack from './modules/navigation';
 import { LANGUAGES } from './shared/helpers/enum';
 import { configureLocalization } from './shared/localization';
@@ -66,7 +66,7 @@ const App = () => {
             <BottomSheetModalProvider>
               <StatusBar barStyle={'dark-content'} translucent={false} backgroundColor="transparent" />
               <RootStack />
-              <ModalAskLogin />
+              {/* <ModalAskLogin /> */}
             </BottomSheetModalProvider>
           </KeyboardProvider>
         </NavigationContainer>

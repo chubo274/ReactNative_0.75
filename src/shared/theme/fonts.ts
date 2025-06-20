@@ -12,4 +12,5 @@ export const AppFont = {
   Thin: 'Roboto-Thin',
   ThinItalic: 'Roboto-ThinItalic',
   Regular: 'Roboto-Regular',
+  HelveticaNeue: 'HelveticaNeue',
 }

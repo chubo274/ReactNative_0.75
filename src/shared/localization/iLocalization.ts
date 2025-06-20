@@ -10,4 +10,9 @@ export interface iLocalization {
     loading: string
     changeLanguage: string
     tokenTimeout: string
+    helloNewFriend: string
+    order: string
+    shop: string
+    incentives: string
+    other: string
 }

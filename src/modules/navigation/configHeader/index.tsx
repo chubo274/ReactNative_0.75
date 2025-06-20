@@ -1,24 +1,39 @@
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
 import { StackNavigationOptions } from '@react-navigation/stack'
+import { Bell, Ticket } from 'phosphor-react-native'
 import React from 'react'
-import { Platform, StatusBar } from 'react-native'
-import { useAppTheme } from 'shared/theme'
+import { Platform, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { ITheme, useAppTheme } from 'shared/theme'
 import { globalShadowStyle } from 'shared/theme/globalStyle'
 import { AppText } from 'src/modules/components/text/AppText'
 import { BackButton } from 'src/modules/navigation/components/BackButton'
 
 export const CreateHeaderDefault = (): StackNavigationOptions => {
   const theme = useAppTheme();
+  const styles = useStyles(theme);
 
   const headerOption: StackNavigationOptions = {
     headerTitleStyle: {
-      color: theme.color.neutral[900],
+      // color: theme.color.neutral[900],
       fontSize: theme.fontSize.p20,
       fontWeight: 500,
       textTransform: 'capitalize',
     },
     headerTitle: ({ style, children, allowFontScaling }: any) =>
-      children && typeof children === 'string' ? <AppText>{`children`}</AppText> : null,
+      children && typeof children === 'string' ?
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <AppText>{`children`}</AppText>
+        <View style={styles.right_header}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.voucher_btn}>
+            <Ticket color='#cd853f' size={20} weight="light" />
+          </TouchableOpacity>
+          <View style={{width: 5}} />
+          <TouchableOpacity activeOpacity={0.8} style={styles.notification_btn}>
+            <Bell size={20} weight="light" />
+          </TouchableOpacity>
+        </View>
+      </View>
+      : null,
     headerTitleAlign: 'left',
     headerBackTitleStyle: {
       color: theme.color.navigation.navigationTintColor
@@ -37,7 +52,7 @@ export const CreateHeaderDefault = (): StackNavigationOptions => {
     headerLeftContainerStyle: {
       paddingLeft: theme.dimensions.p16
     },
-    headerTintColor: theme.color.primary[300],
+    // headerTintColor: theme.color.primary[300],
     headerTitleAllowFontScaling: false,
     headerBackTestID: 'navigation-go-back-button',
     title: '',
@@ -70,3 +85,26 @@ export const CreateHeaderTabDefault = (): BottomTabNavigationOptions => {
   }
   return headerOption
 }
+
+const useStyles = (theme: ITheme) => StyleSheet.create({
+  right_header: {
+    // flex: 1,
+    flexDirection: 'row',
+  },
+  voucher_btn: {
+    width: 60,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'pink',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  notification_btn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

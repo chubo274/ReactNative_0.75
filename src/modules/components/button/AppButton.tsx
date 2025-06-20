@@ -41,7 +41,7 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
   defaultText: {
     marginHorizontal: 4,
     fontFamily: theme.font.Medium,
-    fontSize: theme.fontSize.p15,
+    fontSize: theme.fontSize.p16,
     color: theme.color.textColor.primary,
     textTransform: 'capitalize'
   },

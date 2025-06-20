@@ -6,10 +6,10 @@ const AppColor: IAppColor = {
     navigationTintColor: '#0061C1',
 
     tabbarBackgroundColor: '#FFFFFF',
-    tabbarActiveColor: '#1669EF',
+    tabbarActiveColor: '#cd853f',
     tabbarInactiveColor: '#5D697E',
   },
-
+  stroke: '#CBD5E1',
   bg: {
     disable: '#F5F6F7',
     white: '#FFFFFF',
@@ -21,6 +21,19 @@ const AppColor: IAppColor = {
     disable: '#D9D9D9',
     white: '#FFFFFF',
     link: '#0788CC',
+    subText: '#575655',
+  },
+  neutral: {
+    50: '#eaeaea',
+    100: '#bebebd',
+    200: '#9e9e9d',
+    300: '#727271',
+    400: '#575655',
+    500: '#2d2c2b',
+    600: '#292827',
+    700: '#201f1f',
+    800: '#191818',
+    900: '#131212',
   },
 }
 

@@ -3,7 +3,10 @@ export type AllRouteParamList = AppTabParamList & AppStackParamList & AuthStackP
 // stack in tab bar
 export type AppTabParamList = {
     HomeScreen: undefined;
-    ProfileScreen: undefined;
+    OrderScreen: undefined;
+    ShopScreen: undefined;
+    IncentivesScreen: undefined;
+    OtherContentScreen: undefined;
 };
 
 // all screen had auth

@@ -4,36 +4,25 @@ import HomeScreen from 'src/modules/screen/home'
 import ProfileScreen from 'src/modules/screen/profile'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { AppTabParamList, HomeStackParamList, ProfileStackParamList } from '../AppParamsList'
-import { CreateHeaderTab } from '../configHeader'
+import { AppTabParamList } from '../AppParamsList'
 import { CustomTabBar } from '../components/CustomTabBar'
+import { OrderScreen } from 'src/modules/screen/order/OrderScreen'
+import { ShopScreen } from 'src/modules/screen/shop/ShopScreen'
+import { IncentivesScreen } from 'src/modules/screen/incentives/IncentivesScreen'
+import { OtherContentScreen } from 'src/modules/screen/otherContent/OtherContentScreen'
+import { CreateHeaderTabDefault } from '../configHeader'
 
-const Tab = createBottomTabNavigator<AppTabParamList>()
-const Home = createStackNavigator<HomeStackParamList>()
-const Profile = createStackNavigator<ProfileStackParamList>()
-
+const Tab = createBottomTabNavigator<AppTabParamList>();
 interface IProps {
 
 }
 
-const HomeStack = (props: IProps) => {
-  return <Home.Navigator screenOptions={{ headerShown: false }} initialRouteName={'HomeScreen'}>
-    <Home.Screen name="HomeScreen" component={HomeScreen} />
-  </Home.Navigator>
-}
-
-const ProfileStack = (props: IProps) => {
-  const { t } = useTranslation();
-  const defaultOptions = CreateHeaderTab('ProfileTab')
-
-  return <Profile.Navigator screenOptions={defaultOptions} initialRouteName={'ProfileScreen'}>
-    <Profile.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerTitle: t('profile') }} />
-  </Profile.Navigator>
-}
-
 const AppTab = (props: IProps) => {
+  const { t } = useTranslation();
+  const defaultOptions = CreateHeaderTabDefault();
+
   return <Tab.Navigator
-    initialRouteName={'HomeTab'}
+    initialRouteName={'HomeScreen'}
     screenOptions={{
       tabBarShowLabel: false,
       headerShown: false,
@@ -41,8 +30,11 @@ const AppTab = (props: IProps) => {
     }}
     tabBar={props => <CustomTabBar {...props} />}
   >
-    <Tab.Screen name="HomeTab" component={HomeStack} options={{}} />
-    <Tab.Screen name="ProfileTab" component={ProfileStack} options={{}} />
+    <Tab.Screen name='HomeScreen' component={HomeScreen} options={{}} />
+    <Tab.Screen name='OrderScreen' component={OrderScreen} options={{}} />
+    <Tab.Screen name='ShopScreen' component={ShopScreen} options={{}} />
+    <Tab.Screen name='IncentivesScreen' component={IncentivesScreen} options={{}} />
+    <Tab.Screen name='OtherContentScreen' component={OtherContentScreen} options={{...defaultOptions, headerTitle: t('other')}} />
   </Tab.Navigator>
 }
 

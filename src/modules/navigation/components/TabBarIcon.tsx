@@ -31,7 +31,7 @@ export const TabBarIcon = React.memo((props: IProps) => {
   // }, [name, setBadge]);
 
   return <View style={[styles.container, containerStyle]}>
-    {icon}
+    {icon ? <View style={[styles.txtDisplay, { color: isFocused ? theme.color.navigation.tabbarActiveColor : theme.color.navigation.tabbarInactiveColor }]}>{icon}</View> : null}
     {displayName ? <AppText style={[styles.txtDisplay, { color: isFocused ? theme.color.navigation.tabbarActiveColor : theme.color.navigation.tabbarInactiveColor }]}>{displayName}</AppText> : null}
     {badge ? <View style={styles.badge} /> : null}
   </View>
@@ -43,7 +43,7 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     alignItems: 'center',
   },
   txtDisplay: {
-    fontSize: theme.fontSize.p11,
+    fontSize: theme.fontSize.p12,
     textTransform: 'capitalize'
   },
   badge: {

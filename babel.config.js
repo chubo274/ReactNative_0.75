@@ -20,6 +20,6 @@ module.exports = {
     ['@babel/plugin-transform-class-properties', {loose: true}],
     ['@babel/plugin-transform-private-property-in-object', {loose: true}],
     // Uncomment 'react-native-reanimated/plugin' if you're using Reanimated
-    // 'react-native-reanimated/plugin',
+    'react-native-reanimated/plugin',
   ],
 };

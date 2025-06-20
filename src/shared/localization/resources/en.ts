@@ -12,5 +12,10 @@ const en: iLocalization = {
   loading: 'Loading...',
   changeLanguage: 'Change language',
   tokenTimeout: 'Login session expired',
+  helloNewFriend: 'Hello New Friend',
+  order: 'Order',
+  shop: 'Shop',
+  incentives: 'Incentives',
+  other: 'Other',
 }
 export default en;

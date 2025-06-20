@@ -6,12 +6,13 @@ import { useTranslation } from 'react-i18next'
 import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native'
 import { ITheme, useAppTheme } from 'shared/theme'
 import { TabBarIcon } from './TabBarIcon'
+import { Coffee, HouseLine, List, Storefront, Ticket } from 'phosphor-react-native';
 
 const sizeIcon = {
   height: 20,
   width: 20,
 }
-export const CustomTabBar = (props: BottomTabBarProps) => {
+export const  CustomTabBar = (props: BottomTabBarProps) => {
   const { navigation, state, descriptors } = props
   const theme = useAppTheme();
   const styles = useStyles(theme);
@@ -35,7 +36,7 @@ export const CustomTabBar = (props: BottomTabBarProps) => {
 
           if (!isFocused && !event.defaultPrevented) {
             // The `merge: true` option makes sure that the params inside the tab screen are preserved
-            navigation.navigate(route)
+            navigation.navigate(route as any)
           }
         }
 
@@ -48,12 +49,21 @@ export const CustomTabBar = (props: BottomTabBarProps) => {
 
         const renderImage = (isFocused: boolean) => {
           switch (routeName) {
-            case 'HomeTab':
+            case 'HomeScreen':
               nameDisplay = t('home');
-              return <RenderImage source={undefined} style={sizeIcon} />;
-            case 'ProfileTab':
-              nameDisplay = t('profile');
-              return <RenderImage source={undefined} style={sizeIcon} />;
+              return <HouseLine size={32} weight="light" />
+            case 'OrderScreen':
+              nameDisplay = t('order');
+              return <Coffee size={32} weight="light" />;
+            case 'ShopScreen':
+              nameDisplay = t('shop');
+              return <Storefront size={32} weight="light" />;
+            case 'IncentivesScreen':
+              nameDisplay = t('incentives');
+              return <Ticket size={32} weight="light" />;
+            case 'OtherContentScreen':
+              nameDisplay = t('other');
+              return <List size={32} weight="light" />;
             default:
               return null;
           }
@@ -94,5 +104,6 @@ const useStyles = (theme: ITheme) => StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: 40,
   },
 })
