@@ -102,9 +102,7 @@ class ApiGateway {
         return this._instanceAxios.postForm(configRequest.url!, configRequest?.data, configRequest)
 
       default:
-        // @ts-ignore
-        const error: AxiosResponse = { data: undefined, status: 400, statusText: '400', headers: headers, config: configRequest }
-        return Promise.resolve(error)
+        return Promise.reject(ResponseModel.createError(501, '501', 'Method Not Implemented', 'Not Implemented', configRequest, configRequest, undefined))
     }
   };
 }
